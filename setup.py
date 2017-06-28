@@ -27,8 +27,6 @@ setup(
         'pandas',
         'numpy',
         'untwist >= 0.1.dev0',
-        'os',
-        'collections',
         'lxml'
     ],
     extras_require={

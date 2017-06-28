@@ -1,3 +1,4 @@
+import os
 from lxml import etree
 from collections import namedtuple
 
@@ -80,6 +81,9 @@ def mushra_mixture_from_track_sample(sample,
                                      mixing_levels=[0, 6, 12]):
 
     config = mushra_mixing_config()
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
     # Create different configuration files for every question
     for question_id, question in config.questions.items():
@@ -171,7 +175,8 @@ def mushra_mixture_from_track_sample(sample,
                 # </waet>
 
         tree = etree.ElementTree(waet)
-        filename = config.testname + '_' + question_id + '.xml'
+        filename = os.path.join(directory,
+                                config.testname + '_' + question_id + '.xml')
         tree.write(filename,
                    pretty_print=True,
                    xml_declaration=True,

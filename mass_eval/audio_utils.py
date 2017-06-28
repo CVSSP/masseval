@@ -206,5 +206,5 @@ def write_audio_from_track_sample(sample,
 def write_wav(sig, filename, target_loudness=-23):
     sig.loudness = target_loudness
     # If you need 32-bit wavs, use
-    # sig.astype('float32')
+    sig = sig.astype('float32')
     sig.write(filename)

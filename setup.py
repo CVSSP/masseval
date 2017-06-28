@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open('README.rst') as file:
     long_description = file.read()
@@ -10,7 +10,7 @@ setup(
     author='Dominic Ward, Hagen Wierstorf',
     author_email='dw0031@surrey.ac.uk',
     url='',
-    packages=['mass_eval'],
+    packages=find_packages(),
     long_description=long_description,
     classifiers=[
         "License :: OSI Approved :: MIT License",

@@ -4,7 +4,7 @@ with open('README.rst') as file:
     long_description = file.read()
 
 setup(
-    name='mass-eval',
+    name='mass_eval',
     version='0.1',
     description='Evaluation of musical audio source separation techniques.',
     author='Dominic Ward, Hagen Wierstorf',

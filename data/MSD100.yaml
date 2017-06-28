@@ -1,0 +1,1004 @@
+!!python/object:datasets.MSD100
+base_path: /vol/vssp/datasets/audio/MSD100
+dataset: MSD100
+songs:
+- artist: Actions
+  audio_filepath:
+    bass: Sources/Dev/Actions - Devil's Words/bass.wav
+    drums: Sources/Dev/Actions - Devil's Words/drums.wav
+    mixture: Mixtures/Dev/Actions - Devil's Words/mixture.wav
+    other: Sources/Dev/Actions - Devil's Words/other.wav
+    vocals: Sources/Dev/Actions - Devil's Words/vocals.wav
+  style: Power Pop
+  test_set: 0
+  title: Devil's Words
+- artist: Actions
+  audio_filepath:
+    bass: Sources/Test/Actions - One Minute Smile/bass.wav
+    drums: Sources/Test/Actions - One Minute Smile/drums.wav
+    mixture: Mixtures/Test/Actions - One Minute Smile/mixture.wav
+    other: Sources/Test/Actions - One Minute Smile/other.wav
+    vocals: Sources/Test/Actions - One Minute Smile/vocals.wav
+  style: Power Pop
+  test_set: 1
+  title: One Minute Smile
+- artist: Actions
+  audio_filepath:
+    bass: Sources/Dev/Actions - South Of The Water/bass.wav
+    drums: Sources/Dev/Actions - South Of The Water/drums.wav
+    mixture: Mixtures/Dev/Actions - South Of The Water/mixture.wav
+    other: Sources/Dev/Actions - South Of The Water/other.wav
+    vocals: Sources/Dev/Actions - South Of The Water/vocals.wav
+  style: Power Pop
+  test_set: 0
+  title: South Of The Water
+- artist: Al James
+  audio_filepath:
+    bass: Sources/Test/Al James - Schoolboy Facination/bass.wav
+    drums: Sources/Test/Al James - Schoolboy Facination/drums.wav
+    mixture: Mixtures/Test/Al James - Schoolboy Facination/mixture.wav
+    other: Sources/Test/Al James - Schoolboy Facination/other.wav
+    vocals: Sources/Test/Al James - Schoolboy Facination/vocals.wav
+  style: Bubblegum Pop
+  test_set: 1
+  title: Schoolboy Facination
+- artist: AM Contra
+  audio_filepath:
+    bass: Sources/Dev/AM Contra - Heart Peripheral/bass.wav
+    drums: Sources/Dev/AM Contra - Heart Peripheral/drums.wav
+    mixture: Mixtures/Dev/AM Contra - Heart Peripheral/mixture.wav
+    other: Sources/Dev/AM Contra - Heart Peripheral/other.wav
+    vocals: Sources/Dev/AM Contra - Heart Peripheral/vocals.wav
+  style: Electronic Dance Pop
+  test_set: 0
+  title: Heart Peripheral
+- artist: Angela Thomas Wade
+  audio_filepath:
+    bass: Sources/Test/Angela Thomas Wade - Milk Cow Blues/bass.wav
+    drums: Sources/Test/Angela Thomas Wade - Milk Cow Blues/drums.wav
+    mixture: Mixtures/Test/Angela Thomas Wade - Milk Cow Blues/mixture.wav
+    other: Sources/Test/Angela Thomas Wade - Milk Cow Blues/other.wav
+    vocals: Sources/Test/Angela Thomas Wade - Milk Cow Blues/vocals.wav
+  style: Country
+  test_set: 1
+  title: Milk Cow Blues
+- artist: Angels In Amplifiers
+  audio_filepath:
+    bass: Sources/Dev/Angels In Amplifiers - I'm Alright/bass.wav
+    drums: Sources/Dev/Angels In Amplifiers - I'm Alright/drums.wav
+    mixture: Mixtures/Dev/Angels In Amplifiers - I'm Alright/mixture.wav
+    other: Sources/Dev/Angels In Amplifiers - I'm Alright/other.wav
+    vocals: Sources/Dev/Angels In Amplifiers - I'm Alright/vocals.wav
+  style: Smooth Acoustic Rock
+  test_set: 0
+  title: I'm Alright
+- artist: ANiMAL
+  audio_filepath:
+    bass: Sources/Test/ANiMAL - Clinic A/bass.wav
+    drums: Sources/Test/ANiMAL - Clinic A/drums.wav
+    mixture: Mixtures/Test/ANiMAL - Clinic A/mixture.wav
+    other: Sources/Test/ANiMAL - Clinic A/other.wav
+    vocals: Sources/Test/ANiMAL - Clinic A/vocals.wav
+  style: UK Hip-Hop
+  test_set: 1
+  title: Clinic A
+- artist: ANiMAL
+  audio_filepath:
+    bass: Sources/Dev/ANiMAL - Easy Tiger/bass.wav
+    drums: Sources/Dev/ANiMAL - Easy Tiger/drums.wav
+    mixture: Mixtures/Dev/ANiMAL - Easy Tiger/mixture.wav
+    other: Sources/Dev/ANiMAL - Easy Tiger/other.wav
+    vocals: Sources/Dev/ANiMAL - Easy Tiger/vocals.wav
+  style: UK Hip-Hop
+  test_set: 0
+  title: Easy Tiger
+- artist: ANiMAL
+  audio_filepath:
+    bass: Sources/Test/ANiMAL - Rockshow/bass.wav
+    drums: Sources/Test/ANiMAL - Rockshow/drums.wav
+    mixture: Mixtures/Test/ANiMAL - Rockshow/mixture.wav
+    other: Sources/Test/ANiMAL - Rockshow/other.wav
+    vocals: Sources/Test/ANiMAL - Rockshow/vocals.wav
+  style: UK Hip-Hop
+  test_set: 1
+  title: Rockshow
+- artist: Arise
+  audio_filepath:
+    bass: Sources/Dev/Arise - Run Run Run/bass.wav
+    drums: Sources/Dev/Arise - Run Run Run/drums.wav
+    mixture: Mixtures/Dev/Arise - Run Run Run/mixture.wav
+    other: Sources/Dev/Arise - Run Run Run/other.wav
+    vocals: Sources/Dev/Arise - Run Run Run/vocals.wav
+  style: Roots Reggae
+  test_set: 0
+  title: Run Run Run
+- artist: Atlantis Bound
+  audio_filepath:
+    bass: Sources/Test/Atlantis Bound - It Was My Fault For Waiting/bass.wav
+    drums: Sources/Test/Atlantis Bound - It Was My Fault For Waiting/drums.wav
+    mixture: Mixtures/Test/Atlantis Bound - It Was My Fault For Waiting/mixture.wav
+    other: Sources/Test/Atlantis Bound - It Was My Fault For Waiting/other.wav
+    vocals: Sources/Test/Atlantis Bound - It Was My Fault For Waiting/vocals.wav
+  style: Widescreen Pop/Rock
+  test_set: 1
+  title: It Was My Fault For Waiting
+- artist: Ben Carrigan
+  audio_filepath:
+    bass: Sources/Dev/Ben Carrigan - We'll Talk About It All Tonight/bass.wav
+    drums: Sources/Dev/Ben Carrigan - We'll Talk About It All Tonight/drums.wav
+    mixture: Mixtures/Dev/Ben Carrigan - We'll Talk About It All Tonight/mixture.wav
+    other: Sources/Dev/Ben Carrigan - We'll Talk About It All Tonight/other.wav
+    vocals: Sources/Dev/Ben Carrigan - We'll Talk About It All Tonight/vocals.wav
+  style: Orchestral Indie Pop
+  test_set: 0
+  title: We'll Talk About It All Tonight
+- artist: Bill Chudziak
+  audio_filepath:
+    bass: Sources/Test/Bill Chudziak - Children Of No-one/bass.wav
+    drums: Sources/Test/Bill Chudziak - Children Of No-one/drums.wav
+    mixture: Mixtures/Test/Bill Chudziak - Children Of No-one/mixture.wav
+    other: Sources/Test/Bill Chudziak - Children Of No-one/other.wav
+    vocals: Sources/Test/Bill Chudziak - Children Of No-one/vocals.wav
+  style: Classic Psychedelic Rock
+  test_set: 1
+  title: Children Of No-one
+- artist: BKS
+  audio_filepath:
+    bass: Sources/Dev/BKS - Bulldozer/bass.wav
+    drums: Sources/Dev/BKS - Bulldozer/drums.wav
+    mixture: Mixtures/Dev/BKS - Bulldozer/mixture.wav
+    other: Sources/Dev/BKS - Bulldozer/other.wav
+    vocals: Sources/Dev/BKS - Bulldozer/vocals.wav
+  style: Rock
+  test_set: 0
+  title: Bulldozer
+- artist: BKS
+  audio_filepath:
+    bass: Sources/Test/BKS - Too Much/bass.wav
+    drums: Sources/Test/BKS - Too Much/drums.wav
+    mixture: Mixtures/Test/BKS - Too Much/mixture.wav
+    other: Sources/Test/BKS - Too Much/other.wav
+    vocals: Sources/Test/BKS - Too Much/vocals.wav
+  style: Rock
+  test_set: 1
+  title: Too Much
+- artist: Black Bloc
+  audio_filepath:
+    bass: Sources/Dev/Black Bloc - If You Want Success/bass.wav
+    drums: Sources/Dev/Black Bloc - If You Want Success/drums.wav
+    mixture: Mixtures/Dev/Black Bloc - If You Want Success/mixture.wav
+    other: Sources/Dev/Black Bloc - If You Want Success/other.wav
+    vocals: Sources/Dev/Black Bloc - If You Want Success/vocals.wav
+  style: Political Funk/Rock
+  test_set: 0
+  title: If You Want Success
+- artist: Bobby Nobody
+  audio_filepath:
+    bass: Sources/Test/Bobby Nobody - Stitch Up/bass.wav
+    drums: Sources/Test/Bobby Nobody - Stitch Up/drums.wav
+    mixture: Mixtures/Test/Bobby Nobody - Stitch Up/mixture.wav
+    other: Sources/Test/Bobby Nobody - Stitch Up/other.wav
+    vocals: Sources/Test/Bobby Nobody - Stitch Up/vocals.wav
+  style: Indie Pop/Rock
+  test_set: 1
+  title: Stitch Up
+- artist: Buitraker
+  audio_filepath:
+    bass: Sources/Dev/Buitraker - Revo X/bass.wav
+    drums: Sources/Dev/Buitraker - Revo X/drums.wav
+    mixture: Mixtures/Dev/Buitraker - Revo X/mixture.wav
+    other: Sources/Dev/Buitraker - Revo X/other.wav
+    vocals: Sources/Dev/Buitraker - Revo X/vocals.wav
+  style: Basque Indie Rock
+  test_set: 0
+  title: Revo X
+- artist: Carlos Gonzalez
+  audio_filepath:
+    bass: Sources/Test/Carlos Gonzalez - A Place For Us/bass.wav
+    drums: Sources/Test/Carlos Gonzalez - A Place For Us/drums.wav
+    mixture: Mixtures/Test/Carlos Gonzalez - A Place For Us/mixture.wav
+    other: Sources/Test/Carlos Gonzalez - A Place For Us/other.wav
+    vocals: Sources/Test/Carlos Gonzalez - A Place For Us/vocals.wav
+  style: Indie Pop/Rock
+  test_set: 1
+  title: A Place For Us
+- artist: Chris Durban
+  audio_filepath:
+    bass: Sources/Dev/Chris Durban - Celebrate/bass.wav
+    drums: Sources/Dev/Chris Durban - Celebrate/drums.wav
+    mixture: Mixtures/Dev/Chris Durban - Celebrate/mixture.wav
+    other: Sources/Dev/Chris Durban - Celebrate/other.wav
+    vocals: Sources/Dev/Chris Durban - Celebrate/vocals.wav
+  style: Dark Break-based Dance
+  test_set: 0
+  title: Celebrate
+- artist: Cnoc An Tursa
+  audio_filepath:
+    bass: Sources/Test/Cnoc An Tursa - Bannockburn/bass.wav
+    drums: Sources/Test/Cnoc An Tursa - Bannockburn/drums.wav
+    mixture: Mixtures/Test/Cnoc An Tursa - Bannockburn/mixture.wav
+    other: Sources/Test/Cnoc An Tursa - Bannockburn/other.wav
+    vocals: Sources/Test/Cnoc An Tursa - Bannockburn/vocals.wav
+  style: Death Metal
+  test_set: 1
+  title: Bannockburn
+- artist: Cristina Vane
+  audio_filepath:
+    bass: Sources/Dev/Cristina Vane - So Easy/bass.wav
+    drums: Sources/Dev/Cristina Vane - So Easy/drums.wav
+    mixture: Mixtures/Dev/Cristina Vane - So Easy/mixture.wav
+    other: Sources/Dev/Cristina Vane - So Easy/other.wav
+    vocals: Sources/Dev/Cristina Vane - So Easy/vocals.wav
+  style: Acoustic Singer-Songwriter
+  test_set: 0
+  title: So Easy
+- artist: Dark Ride
+  audio_filepath:
+    bass: Sources/Test/Dark Ride - Burning Bridges/bass.wav
+    drums: Sources/Test/Dark Ride - Burning Bridges/drums.wav
+    mixture: Mixtures/Test/Dark Ride - Burning Bridges/mixture.wav
+    other: Sources/Test/Dark Ride - Burning Bridges/other.wav
+    vocals: Sources/Test/Dark Ride - Burning Bridges/vocals.wav
+  style: Heavy Metal
+  test_set: 1
+  title: Burning Bridges
+- artist: Detsky Sad
+  audio_filepath:
+    bass: Sources/Dev/Detsky Sad - Walkie Talkie/bass.wav
+    drums: Sources/Dev/Detsky Sad - Walkie Talkie/drums.wav
+    mixture: Mixtures/Dev/Detsky Sad - Walkie Talkie/mixture.wav
+    other: Sources/Dev/Detsky Sad - Walkie Talkie/other.wav
+    vocals: Sources/Dev/Detsky Sad - Walkie Talkie/vocals.wav
+  style: Ukrainian Indie Rock
+  test_set: 0
+  title: Walkie Talkie
+- artist: Drumtracks
+  audio_filepath:
+    bass: Sources/Test/Drumtracks - Ghost Bitch/bass.wav
+    drums: Sources/Test/Drumtracks - Ghost Bitch/drums.wav
+    mixture: Mixtures/Test/Drumtracks - Ghost Bitch/mixture.wav
+    other: Sources/Test/Drumtracks - Ghost Bitch/other.wav
+    vocals: Sources/Test/Drumtracks - Ghost Bitch/vocals.wav
+  style: Leftfield Pop/Electronica
+  test_set: 1
+  title: Ghost Bitch
+- artist: Enda Reilly
+  audio_filepath:
+    bass: Sources/Dev/Enda Reilly - Cur An Long Ag Seol/bass.wav
+    drums: Sources/Dev/Enda Reilly - Cur An Long Ag Seol/drums.wav
+    mixture: Mixtures/Dev/Enda Reilly - Cur An Long Ag Seol/mixture.wav
+    other: Sources/Dev/Enda Reilly - Cur An Long Ag Seol/other.wav
+    vocals: Sources/Dev/Enda Reilly - Cur An Long Ag Seol/vocals.wav
+  style: Irish-Language Singer-Songwriter
+  test_set: 0
+  title: Cur An Long Ag Seol
+- artist: Fergessen
+  audio_filepath:
+    bass: Sources/Test/Fergessen - Back From The Start/bass.wav
+    drums: Sources/Test/Fergessen - Back From The Start/drums.wav
+    mixture: Mixtures/Test/Fergessen - Back From The Start/mixture.wav
+    other: Sources/Test/Fergessen - Back From The Start/other.wav
+    vocals: Sources/Test/Fergessen - Back From The Start/vocals.wav
+  style: Melodic Indie Rock
+  test_set: 1
+  title: Back From The Start
+- artist: Fergessen
+  audio_filepath:
+    bass: Sources/Dev/Fergessen - Nos Palpitants/bass.wav
+    drums: Sources/Dev/Fergessen - Nos Palpitants/drums.wav
+    mixture: Mixtures/Dev/Fergessen - Nos Palpitants/mixture.wav
+    other: Sources/Dev/Fergessen - Nos Palpitants/other.wav
+    vocals: Sources/Dev/Fergessen - Nos Palpitants/vocals.wav
+  style: Melodic Indie Rock
+  test_set: 0
+  title: Nos Palpitants
+- artist: Fergessen
+  audio_filepath:
+    bass: Sources/Test/Fergessen - The Wind/bass.wav
+    drums: Sources/Test/Fergessen - The Wind/drums.wav
+    mixture: Mixtures/Test/Fergessen - The Wind/mixture.wav
+    other: Sources/Test/Fergessen - The Wind/other.wav
+    vocals: Sources/Test/Fergessen - The Wind/vocals.wav
+  style: Melodic Indie Rock
+  test_set: 1
+  title: The Wind
+- artist: Flags
+  audio_filepath:
+    bass: Sources/Dev/Flags - 54/bass.wav
+    drums: Sources/Dev/Flags - 54/drums.wav
+    mixture: Mixtures/Dev/Flags - 54/mixture.wav
+    other: Sources/Dev/Flags - 54/other.wav
+    vocals: Sources/Dev/Flags - 54/vocals.wav
+  style: Buckley-esque Indie Rock
+  test_set: 0
+  title: '54'
+- artist: Forkupines
+  audio_filepath:
+    bass: Sources/Test/Forkupines - Semantics/bass.wav
+    drums: Sources/Test/Forkupines - Semantics/drums.wav
+    mixture: Mixtures/Test/Forkupines - Semantics/mixture.wav
+    other: Sources/Test/Forkupines - Semantics/other.wav
+    vocals: Sources/Test/Forkupines - Semantics/vocals.wav
+  style: Alternative Punk-Rock
+  test_set: 1
+  title: Semantics
+- artist: Georgia Wonder
+  audio_filepath:
+    bass: Sources/Dev/Georgia Wonder - Siren/bass.wav
+    drums: Sources/Dev/Georgia Wonder - Siren/drums.wav
+    mixture: Mixtures/Dev/Georgia Wonder - Siren/mixture.wav
+    other: Sources/Dev/Georgia Wonder - Siren/other.wav
+    vocals: Sources/Dev/Georgia Wonder - Siren/vocals.wav
+  style: 'Pop Disco/Rock '
+  test_set: 0
+  title: Siren
+- artist: Girls Under Glass
+  audio_filepath:
+    bass: Sources/Test/Girls Under Glass - We Feel Alright/bass.wav
+    drums: Sources/Test/Girls Under Glass - We Feel Alright/drums.wav
+    mixture: Mixtures/Test/Girls Under Glass - We Feel Alright/mixture.wav
+    other: Sources/Test/Girls Under Glass - We Feel Alright/other.wav
+    vocals: Sources/Test/Girls Under Glass - We Feel Alright/vocals.wav
+  style: Gothic Electro
+  test_set: 1
+  title: We Feel Alright
+- artist: Giselle
+  audio_filepath:
+    bass: Sources/Dev/Giselle - Moss/bass.wav
+    drums: Sources/Dev/Giselle - Moss/drums.wav
+    mixture: Mixtures/Dev/Giselle - Moss/mixture.wav
+    other: Sources/Dev/Giselle - Moss/other.wav
+    vocals: Sources/Dev/Giselle - Moss/vocals.wav
+  style: Electronica/Classical Crossover
+  test_set: 0
+  title: Moss
+- artist: Hollow Ground
+  audio_filepath:
+    bass: Sources/Test/Hollow Ground - Ill Fate/bass.wav
+    drums: Sources/Test/Hollow Ground - Ill Fate/drums.wav
+    mixture: Mixtures/Test/Hollow Ground - Ill Fate/mixture.wav
+    other: Sources/Test/Hollow Ground - Ill Fate/other.wav
+    vocals: Sources/Test/Hollow Ground - Ill Fate/vocals.wav
+  style: Death Metal
+  test_set: 1
+  title: Ill Fate
+- artist: Hollow Ground
+  audio_filepath:
+    bass: Sources/Dev/Hollow Ground - Left Blind/bass.wav
+    drums: Sources/Dev/Hollow Ground - Left Blind/drums.wav
+    mixture: Mixtures/Dev/Hollow Ground - Left Blind/mixture.wav
+    other: Sources/Dev/Hollow Ground - Left Blind/other.wav
+    vocals: Sources/Dev/Hollow Ground - Left Blind/vocals.wav
+  style: Death Metal
+  test_set: 0
+  title: Left Blind
+- artist: James Elder & Mark M Thompson
+  audio_filepath:
+    bass: Sources/Test/James Elder & Mark M Thompson - The English Actor/bass.wav
+    drums: Sources/Test/James Elder & Mark M Thompson - The English Actor/drums.wav
+    mixture: Mixtures/Test/James Elder & Mark M Thompson - The English Actor/mixture.wav
+    other: Sources/Test/James Elder & Mark M Thompson - The English Actor/other.wav
+    vocals: Sources/Test/James Elder & Mark M Thompson - The English Actor/vocals.wav
+  style: Indie Pop
+  test_set: 1
+  title: The English Actor
+- artist: James May
+  audio_filepath:
+    bass: Sources/Dev/James May - All Souls Moon/bass.wav
+    drums: Sources/Dev/James May - All Souls Moon/drums.wav
+    mixture: Mixtures/Dev/James May - All Souls Moon/mixture.wav
+    other: Sources/Dev/James May - All Souls Moon/other.wav
+    vocals: Sources/Dev/James May - All Souls Moon/vocals.wav
+  style: Acoustic Singer-Songwriter
+  test_set: 0
+  title: All Souls Moon
+- artist: James May
+  audio_filepath:
+    bass: Sources/Test/James May - Dont Let Go/bass.wav
+    drums: Sources/Test/James May - Dont Let Go/drums.wav
+    mixture: Mixtures/Test/James May - Dont Let Go/mixture.wav
+    other: Sources/Test/James May - Dont Let Go/other.wav
+    vocals: Sources/Test/James May - Dont Let Go/vocals.wav
+  style: Acoustic Singer-Songwriter
+  test_set: 1
+  title: Dont Let Go
+- artist: James May
+  audio_filepath:
+    bass: Sources/Dev/James May - If You Say/bass.wav
+    drums: Sources/Dev/James May - If You Say/drums.wav
+    mixture: Mixtures/Dev/James May - If You Say/mixture.wav
+    other: Sources/Dev/James May - If You Say/other.wav
+    vocals: Sources/Dev/James May - If You Say/vocals.wav
+  style: Acoustic Singer-Songwriter
+  test_set: 0
+  title: If You Say
+- artist: James May
+  audio_filepath:
+    bass: Sources/Test/James May - On The Line/bass.wav
+    drums: Sources/Test/James May - On The Line/drums.wav
+    mixture: Mixtures/Test/James May - On The Line/mixture.wav
+    other: Sources/Test/James May - On The Line/other.wav
+    vocals: Sources/Test/James May - On The Line/vocals.wav
+  style: Acoustic Singer-Songwriter
+  test_set: 1
+  title: On The Line
+- artist: Jay Menon
+  audio_filepath:
+    bass: Sources/Dev/Jay Menon - Through My Eyes/bass.wav
+    drums: Sources/Dev/Jay Menon - Through My Eyes/drums.wav
+    mixture: Mixtures/Dev/Jay Menon - Through My Eyes/mixture.wav
+    other: Sources/Dev/Jay Menon - Through My Eyes/other.wav
+    vocals: Sources/Dev/Jay Menon - Through My Eyes/vocals.wav
+  style: Intimate Pop Ballad
+  test_set: 0
+  title: Through My Eyes
+- artist: Johnny Lokke
+  audio_filepath:
+    bass: Sources/Test/Johnny Lokke - Promises & Lies/bass.wav
+    drums: Sources/Test/Johnny Lokke - Promises & Lies/drums.wav
+    mixture: Mixtures/Test/Johnny Lokke - Promises & Lies/mixture.wav
+    other: Sources/Test/Johnny Lokke - Promises & Lies/other.wav
+    vocals: Sources/Test/Johnny Lokke - Promises & Lies/vocals.wav
+  style: Classic Heavy Rock
+  test_set: 1
+  title: Promises & Lies
+- artist: Johnny Lokke
+  audio_filepath:
+    bass: Sources/Dev/Johnny Lokke - Whisper To A Scream/bass.wav
+    drums: Sources/Dev/Johnny Lokke - Whisper To A Scream/drums.wav
+    mixture: Mixtures/Dev/Johnny Lokke - Whisper To A Scream/mixture.wav
+    other: Sources/Dev/Johnny Lokke - Whisper To A Scream/other.wav
+    vocals: Sources/Dev/Johnny Lokke - Whisper To A Scream/vocals.wav
+  style: Classic Heavy Rock
+  test_set: 0
+  title: Whisper To A Scream
+- artist: Jokers, Jacks & Kings
+  audio_filepath:
+    bass: Sources/Test/Jokers, Jacks & Kings - Sea Of Leaves/bass.wav
+    drums: Sources/Test/Jokers, Jacks & Kings - Sea Of Leaves/drums.wav
+    mixture: Mixtures/Test/Jokers, Jacks & Kings - Sea Of Leaves/mixture.wav
+    other: Sources/Test/Jokers, Jacks & Kings - Sea Of Leaves/other.wav
+    vocals: Sources/Test/Jokers, Jacks & Kings - Sea Of Leaves/vocals.wav
+  style: Uptempo Indie Rock
+  test_set: 1
+  title: Sea Of Leaves
+- artist: Juliet's Rescue
+  audio_filepath:
+    bass: Sources/Dev/Juliet's Rescue - Heartbeats/bass.wav
+    drums: Sources/Dev/Juliet's Rescue - Heartbeats/drums.wav
+    mixture: Mixtures/Dev/Juliet's Rescue - Heartbeats/mixture.wav
+    other: Sources/Dev/Juliet's Rescue - Heartbeats/other.wav
+    vocals: Sources/Dev/Juliet's Rescue - Heartbeats/vocals.wav
+  style: Club Rock
+  test_set: 0
+  title: Heartbeats
+- artist: Leaf
+  audio_filepath:
+    bass: Sources/Test/Leaf - Come Around/bass.wav
+    drums: Sources/Test/Leaf - Come Around/drums.wav
+    mixture: Mixtures/Test/Leaf - Come Around/mixture.wav
+    other: Sources/Test/Leaf - Come Around/other.wav
+    vocals: Sources/Test/Leaf - Come Around/vocals.wav
+  style: Atmospheric Indie Pop
+  test_set: 1
+  title: Come Around
+- artist: Leaf
+  audio_filepath:
+    bass: Sources/Dev/Leaf - Summerghost/bass.wav
+    drums: Sources/Dev/Leaf - Summerghost/drums.wav
+    mixture: Mixtures/Dev/Leaf - Summerghost/mixture.wav
+    other: Sources/Dev/Leaf - Summerghost/other.wav
+    vocals: Sources/Dev/Leaf - Summerghost/vocals.wav
+  style: Atmospheric Indie Pop
+  test_set: 0
+  title: Summerghost
+- artist: Leaf
+  audio_filepath:
+    bass: Sources/Test/Leaf - Wicked/bass.wav
+    drums: Sources/Test/Leaf - Wicked/drums.wav
+    mixture: Mixtures/Test/Leaf - Wicked/mixture.wav
+    other: Sources/Test/Leaf - Wicked/other.wav
+    vocals: Sources/Test/Leaf - Wicked/vocals.wav
+  style: Atmospheric Indie Pop
+  test_set: 1
+  title: Wicked
+- artist: Little Chicago's Finest
+  audio_filepath:
+    bass: Sources/Dev/Little Chicago's Finest - My Own/bass.wav
+    drums: Sources/Dev/Little Chicago's Finest - My Own/drums.wav
+    mixture: Mixtures/Dev/Little Chicago's Finest - My Own/mixture.wav
+    other: Sources/Dev/Little Chicago's Finest - My Own/other.wav
+    vocals: Sources/Dev/Little Chicago's Finest - My Own/vocals.wav
+  style: Hip-Hop
+  test_set: 0
+  title: My Own
+- artist: Louis Cressy Band
+  audio_filepath:
+    bass: Sources/Test/Louis Cressy Band - Good Time/bass.wav
+    drums: Sources/Test/Louis Cressy Band - Good Time/drums.wav
+    mixture: Mixtures/Test/Louis Cressy Band - Good Time/mixture.wav
+    other: Sources/Test/Louis Cressy Band - Good Time/other.wav
+    vocals: Sources/Test/Louis Cressy Band - Good Time/vocals.wav
+  style: Funk Rock
+  test_set: 1
+  title: Good Time
+- artist: Lyndsey Ollard
+  audio_filepath:
+    bass: Sources/Dev/Lyndsey Ollard - Catching Up/bass.wav
+    drums: Sources/Dev/Lyndsey Ollard - Catching Up/drums.wav
+    mixture: Mixtures/Dev/Lyndsey Ollard - Catching Up/mixture.wav
+    other: Sources/Dev/Lyndsey Ollard - Catching Up/other.wav
+    vocals: Sources/Dev/Lyndsey Ollard - Catching Up/vocals.wav
+  style: MOR Singer-Songwriter
+  test_set: 0
+  title: Catching Up
+- artist: M.E.R.C. Music
+  audio_filepath:
+    bass: Sources/Test/M.E.R.C. Music - Knockout/bass.wav
+    drums: Sources/Test/M.E.R.C. Music - Knockout/drums.wav
+    mixture: Mixtures/Test/M.E.R.C. Music - Knockout/mixture.wav
+    other: Sources/Test/M.E.R.C. Music - Knockout/other.wav
+    vocals: Sources/Test/M.E.R.C. Music - Knockout/vocals.wav
+  style: Mainstream Hip-Hop
+  test_set: 1
+  title: Knockout
+- artist: Moosmusic
+  audio_filepath:
+    bass: Sources/Dev/Moosmusic - Big Dummy Shake/bass.wav
+    drums: Sources/Dev/Moosmusic - Big Dummy Shake/drums.wav
+    mixture: Mixtures/Dev/Moosmusic - Big Dummy Shake/mixture.wav
+    other: Sources/Dev/Moosmusic - Big Dummy Shake/other.wav
+    vocals: Sources/Dev/Moosmusic - Big Dummy Shake/vocals.wav
+  style: Indie Pop/Rock
+  test_set: 0
+  title: Big Dummy Shake
+- artist: Motor Tapes
+  audio_filepath:
+    bass: Sources/Test/Motor Tapes - Shore/bass.wav
+    drums: Sources/Test/Motor Tapes - Shore/drums.wav
+    mixture: Mixtures/Test/Motor Tapes - Shore/mixture.wav
+    other: Sources/Test/Motor Tapes - Shore/other.wav
+    vocals: Sources/Test/Motor Tapes - Shore/vocals.wav
+  style: Indie Rock
+  test_set: 1
+  title: Shore
+- artist: Mu
+  audio_filepath:
+    bass: Sources/Dev/Mu - Too Bright/bass.wav
+    drums: Sources/Dev/Mu - Too Bright/drums.wav
+    mixture: Mixtures/Dev/Mu - Too Bright/mixture.wav
+    other: Sources/Dev/Mu - Too Bright/other.wav
+    vocals: Sources/Dev/Mu - Too Bright/vocals.wav
+  style: Alternative Electro Rock
+  test_set: 0
+  title: Too Bright
+- artist: Nerve 9
+  audio_filepath:
+    bass: Sources/Test/Nerve 9 - Pray For The Rain/bass.wav
+    drums: Sources/Test/Nerve 9 - Pray For The Rain/drums.wav
+    mixture: Mixtures/Test/Nerve 9 - Pray For The Rain/mixture.wav
+    other: Sources/Test/Nerve 9 - Pray For The Rain/other.wav
+    vocals: Sources/Test/Nerve 9 - Pray For The Rain/vocals.wav
+  style: Alternative Rock Ballad
+  test_set: 1
+  title: Pray For The Rain
+- artist: North To Alaska
+  audio_filepath:
+    bass: Sources/Dev/North To Alaska - All The Same/bass.wav
+    drums: Sources/Dev/North To Alaska - All The Same/drums.wav
+    mixture: Mixtures/Dev/North To Alaska - All The Same/mixture.wav
+    other: Sources/Dev/North To Alaska - All The Same/other.wav
+    vocals: Sources/Dev/North To Alaska - All The Same/vocals.wav
+  style: Emo Rock
+  test_set: 0
+  title: All The Same
+- artist: Patrick Talbot
+  audio_filepath:
+    bass: Sources/Test/Patrick Talbot - A Reason To Leave/bass.wav
+    drums: Sources/Test/Patrick Talbot - A Reason To Leave/drums.wav
+    mixture: Mixtures/Test/Patrick Talbot - A Reason To Leave/mixture.wav
+    other: Sources/Test/Patrick Talbot - A Reason To Leave/other.wav
+    vocals: Sources/Test/Patrick Talbot - A Reason To Leave/vocals.wav
+  style: Jazz/Singer-Songwriter
+  test_set: 1
+  title: A Reason To Leave
+- artist: Patrick Talbot
+  audio_filepath:
+    bass: Sources/Dev/Patrick Talbot - Set Me Free/bass.wav
+    drums: Sources/Dev/Patrick Talbot - Set Me Free/drums.wav
+    mixture: Mixtures/Dev/Patrick Talbot - Set Me Free/mixture.wav
+    other: Sources/Dev/Patrick Talbot - Set Me Free/other.wav
+    vocals: Sources/Dev/Patrick Talbot - Set Me Free/vocals.wav
+  style: Jazz/Singer-Songwriter
+  test_set: 0
+  title: Set Me Free
+- artist: Phre The Eon
+  audio_filepath:
+    bass: Sources/Test/Phre The Eon - Everybody's Falling Apart/bass.wav
+    drums: Sources/Test/Phre The Eon - Everybody's Falling Apart/drums.wav
+    mixture: Mixtures/Test/Phre The Eon - Everybody's Falling Apart/mixture.wav
+    other: Sources/Test/Phre The Eon - Everybody's Falling Apart/other.wav
+    vocals: Sources/Test/Phre The Eon - Everybody's Falling Apart/vocals.wav
+  style: Indie Funk/Rock
+  test_set: 1
+  title: Everybody's Falling Apart
+- artist: Punkdisco
+  audio_filepath:
+    bass: Sources/Dev/Punkdisco - Oral Hygiene/bass.wav
+    drums: Sources/Dev/Punkdisco - Oral Hygiene/drums.wav
+    mixture: Mixtures/Dev/Punkdisco - Oral Hygiene/mixture.wav
+    other: Sources/Dev/Punkdisco - Oral Hygiene/other.wav
+    vocals: Sources/Dev/Punkdisco - Oral Hygiene/vocals.wav
+  style: Punk Electronica
+  test_set: 0
+  title: Oral Hygiene
+- artist: Raft Monk
+  audio_filepath:
+    bass: Sources/Test/Raft Monk - Tiring/bass.wav
+    drums: Sources/Test/Raft Monk - Tiring/drums.wav
+    mixture: Mixtures/Test/Raft Monk - Tiring/mixture.wav
+    other: Sources/Test/Raft Monk - Tiring/other.wav
+    vocals: Sources/Test/Raft Monk - Tiring/vocals.wav
+  style: Electronic Rock/Pop
+  test_set: 1
+  title: Tiring
+- artist: Remember December
+  audio_filepath:
+    bass: Sources/Dev/Remember December - C U Next Time/bass.wav
+    drums: Sources/Dev/Remember December - C U Next Time/drums.wav
+    mixture: Mixtures/Dev/Remember December - C U Next Time/mixture.wav
+    other: Sources/Dev/Remember December - C U Next Time/other.wav
+    vocals: Sources/Dev/Remember December - C U Next Time/vocals.wav
+  style: Alt Pop/Rock
+  test_set: 0
+  title: C U Next Time
+- artist: Sambasevam Shanmugam
+  audio_filepath:
+    bass: Sources/Test/Sambasevam Shanmugam - Kaathaadi/bass.wav
+    drums: Sources/Test/Sambasevam Shanmugam - Kaathaadi/drums.wav
+    mixture: Mixtures/Test/Sambasevam Shanmugam - Kaathaadi/mixture.wav
+    other: Sources/Test/Sambasevam Shanmugam - Kaathaadi/other.wav
+    vocals: Sources/Test/Sambasevam Shanmugam - Kaathaadi/vocals.wav
+  style: Bollywood
+  test_set: 1
+  title: Kaathaadi
+- artist: Secretariat
+  audio_filepath:
+    bass: Sources/Dev/Secretariat - Borderline/bass.wav
+    drums: Sources/Dev/Secretariat - Borderline/drums.wav
+    mixture: Mixtures/Dev/Secretariat - Borderline/mixture.wav
+    other: Sources/Dev/Secretariat - Borderline/other.wav
+    vocals: Sources/Dev/Secretariat - Borderline/vocals.wav
+  style: Americana
+  test_set: 0
+  title: Borderline
+- artist: Secretariat
+  audio_filepath:
+    bass: Sources/Test/Secretariat - Over The Top/bass.wav
+    drums: Sources/Test/Secretariat - Over The Top/drums.wav
+    mixture: Mixtures/Test/Secretariat - Over The Top/mixture.wav
+    other: Sources/Test/Secretariat - Over The Top/other.wav
+    vocals: Sources/Test/Secretariat - Over The Top/vocals.wav
+  style: Americana
+  test_set: 1
+  title: Over The Top
+- artist: Side Effects Project
+  audio_filepath:
+    bass: Sources/Dev/Side Effects Project - Sing With Me/bass.wav
+    drums: Sources/Dev/Side Effects Project - Sing With Me/drums.wav
+    mixture: Mixtures/Dev/Side Effects Project - Sing With Me/mixture.wav
+    other: Sources/Dev/Side Effects Project - Sing With Me/other.wav
+    vocals: Sources/Dev/Side Effects Project - Sing With Me/vocals.wav
+  style: West-Coast Hip-Hop
+  test_set: 0
+  title: Sing With Me
+- artist: Signe Jakobsen
+  audio_filepath:
+    bass: Sources/Test/Signe Jakobsen - What Have You Done To Me/bass.wav
+    drums: Sources/Test/Signe Jakobsen - What Have You Done To Me/drums.wav
+    mixture: Mixtures/Test/Signe Jakobsen - What Have You Done To Me/mixture.wav
+    other: Sources/Test/Signe Jakobsen - What Have You Done To Me/other.wav
+    vocals: Sources/Test/Signe Jakobsen - What Have You Done To Me/vocals.wav
+  style: Rock Singer-Songwriter
+  test_set: 1
+  title: What Have You Done To Me
+- artist: Skelpolu
+  audio_filepath:
+    bass: Sources/Dev/Skelpolu - Human Mistakes/bass.wav
+    drums: Sources/Dev/Skelpolu - Human Mistakes/drums.wav
+    mixture: Mixtures/Dev/Skelpolu - Human Mistakes/mixture.wav
+    other: Sources/Dev/Skelpolu - Human Mistakes/other.wav
+    vocals: Sources/Dev/Skelpolu - Human Mistakes/vocals.wav
+  style: Drum & Bass
+  test_set: 0
+  title: Human Mistakes
+- artist: Skelpolu
+  audio_filepath:
+    bass: Sources/Test/Skelpolu - Resurrection/bass.wav
+    drums: Sources/Test/Skelpolu - Resurrection/drums.wav
+    mixture: Mixtures/Test/Skelpolu - Resurrection/mixture.wav
+    other: Sources/Test/Skelpolu - Resurrection/other.wav
+    vocals: Sources/Test/Skelpolu - Resurrection/vocals.wav
+  style: Drum & Bass
+  test_set: 1
+  title: Resurrection
+- artist: Skelpolu
+  audio_filepath:
+    bass: Sources/Dev/Skelpolu - Together Alone/bass.wav
+    drums: Sources/Dev/Skelpolu - Together Alone/drums.wav
+    mixture: Mixtures/Dev/Skelpolu - Together Alone/mixture.wav
+    other: Sources/Dev/Skelpolu - Together Alone/other.wav
+    vocals: Sources/Dev/Skelpolu - Together Alone/vocals.wav
+  style: Drum & Bass
+  test_set: 0
+  title: Together Alone
+- artist: Speak Softly
+  audio_filepath:
+    bass: Sources/Test/Speak Softly - Broken Man/bass.wav
+    drums: Sources/Test/Speak Softly - Broken Man/drums.wav
+    mixture: Mixtures/Test/Speak Softly - Broken Man/mixture.wav
+    other: Sources/Test/Speak Softly - Broken Man/other.wav
+    vocals: Sources/Test/Speak Softly - Broken Man/vocals.wav
+  style: Atmospheric Electronic Pop
+  test_set: 1
+  title: Broken Man
+- artist: Speak Softly
+  audio_filepath:
+    bass: Sources/Dev/Speak Softly - Like Horses/bass.wav
+    drums: Sources/Dev/Speak Softly - Like Horses/drums.wav
+    mixture: Mixtures/Dev/Speak Softly - Like Horses/mixture.wav
+    other: Sources/Dev/Speak Softly - Like Horses/other.wav
+    vocals: Sources/Dev/Speak Softly - Like Horses/vocals.wav
+  style: Atmospheric Electronic Pop
+  test_set: 0
+  title: Like Horses
+- artist: Spike Mullings
+  audio_filepath:
+    bass: Sources/Test/Spike Mullings - Mike's Sulking/bass.wav
+    drums: Sources/Test/Spike Mullings - Mike's Sulking/drums.wav
+    mixture: Mixtures/Test/Spike Mullings - Mike's Sulking/mixture.wav
+    other: Sources/Test/Spike Mullings - Mike's Sulking/other.wav
+    vocals: Sources/Test/Spike Mullings - Mike's Sulking/vocals.wav
+  style: Indie Rock
+  test_set: 1
+  title: Mike's Sulking
+- artist: St Vitus
+  audio_filepath:
+    bass: Sources/Dev/St Vitus - Word Gets Around/bass.wav
+    drums: Sources/Dev/St Vitus - Word Gets Around/drums.wav
+    mixture: Mixtures/Dev/St Vitus - Word Gets Around/mixture.wav
+    other: Sources/Dev/St Vitus - Word Gets Around/other.wav
+    vocals: Sources/Dev/St Vitus - Word Gets Around/vocals.wav
+  style: Indie Singer-Songwriter
+  test_set: 0
+  title: Word Gets Around
+- artist: Swinging Steaks
+  audio_filepath:
+    bass: Sources/Test/Swinging Steaks - Lost My Way/bass.wav
+    drums: Sources/Test/Swinging Steaks - Lost My Way/drums.wav
+    mixture: Mixtures/Test/Swinging Steaks - Lost My Way/mixture.wav
+    other: Sources/Test/Swinging Steaks - Lost My Way/other.wav
+    vocals: Sources/Test/Swinging Steaks - Lost My Way/vocals.wav
+  style: Country Rock
+  test_set: 1
+  title: Lost My Way
+- artist: The Doppler Shift
+  audio_filepath:
+    bass: Sources/Dev/The Doppler Shift - Atrophy/bass.wav
+    drums: Sources/Dev/The Doppler Shift - Atrophy/drums.wav
+    mixture: Mixtures/Dev/The Doppler Shift - Atrophy/mixture.wav
+    other: Sources/Dev/The Doppler Shift - Atrophy/other.wav
+    vocals: Sources/Dev/The Doppler Shift - Atrophy/vocals.wav
+  style: Epic Indie Rock
+  test_set: 0
+  title: Atrophy
+- artist: The Long Wait
+  audio_filepath:
+    bass: Sources/Test/The Long Wait - Back Home To Blue/bass.wav
+    drums: Sources/Test/The Long Wait - Back Home To Blue/drums.wav
+    mixture: Mixtures/Test/The Long Wait - Back Home To Blue/mixture.wav
+    other: Sources/Test/The Long Wait - Back Home To Blue/other.wav
+    vocals: Sources/Test/The Long Wait - Back Home To Blue/vocals.wav
+  style: Country Rock
+  test_set: 1
+  title: Back Home To Blue
+- artist: The Long Wait
+  audio_filepath:
+    bass: Sources/Dev/The Long Wait - Dark Horses/bass.wav
+    drums: Sources/Dev/The Long Wait - Dark Horses/drums.wav
+    mixture: Mixtures/Dev/The Long Wait - Dark Horses/mixture.wav
+    other: Sources/Dev/The Long Wait - Dark Horses/other.wav
+    vocals: Sources/Dev/The Long Wait - Dark Horses/vocals.wav
+  style: Country Rock
+  test_set: 0
+  title: Dark Horses
+- artist: The Mountaineering Club
+  audio_filepath:
+    bass: Sources/Test/The Mountaineering Club - Mallory/bass.wav
+    drums: Sources/Test/The Mountaineering Club - Mallory/drums.wav
+    mixture: Mixtures/Test/The Mountaineering Club - Mallory/mixture.wav
+    other: Sources/Test/The Mountaineering Club - Mallory/other.wav
+    vocals: Sources/Test/The Mountaineering Club - Mallory/vocals.wav
+  style: Atmospheric Indie Pop
+  test_set: 1
+  title: Mallory
+- artist: The Sunshine Garcia Band
+  audio_filepath:
+    bass: Sources/Dev/The Sunshine Garcia Band - For I Am The Moon/bass.wav
+    drums: Sources/Dev/The Sunshine Garcia Band - For I Am The Moon/drums.wav
+    mixture: Mixtures/Dev/The Sunshine Garcia Band - For I Am The Moon/mixture.wav
+    other: Sources/Dev/The Sunshine Garcia Band - For I Am The Moon/other.wav
+    vocals: Sources/Dev/The Sunshine Garcia Band - For I Am The Moon/vocals.wav
+  style: Reggae/Gospel
+  test_set: 0
+  title: For I Am The Moon
+- artist: The Wrong'Uns
+  audio_filepath:
+    bass: Sources/Test/The Wrong'Uns - Rothko/bass.wav
+    drums: Sources/Test/The Wrong'Uns - Rothko/drums.wav
+    mixture: Mixtures/Test/The Wrong'Uns - Rothko/mixture.wav
+    other: Sources/Test/The Wrong'Uns - Rothko/other.wav
+    vocals: Sources/Test/The Wrong'Uns - Rothko/vocals.wav
+  style: Acoustic Indie Pop
+  test_set: 1
+  title: Rothko
+- artist: Tim Taler
+  audio_filepath:
+    bass: Sources/Dev/Tim Taler - Stalker/bass.wav
+    drums: Sources/Dev/Tim Taler - Stalker/drums.wav
+    mixture: Mixtures/Dev/Tim Taler - Stalker/mixture.wav
+    other: Sources/Dev/Tim Taler - Stalker/other.wav
+    vocals: Sources/Dev/Tim Taler - Stalker/vocals.wav
+  style: Ukrainian Art-Punk
+  test_set: 0
+  title: Stalker
+- artist: Timboz
+  audio_filepath:
+    bass: Sources/Test/Timboz - Pony/bass.wav
+    drums: Sources/Test/Timboz - Pony/drums.wav
+    mixture: Mixtures/Test/Timboz - Pony/mixture.wav
+    other: Sources/Test/Timboz - Pony/other.wav
+    vocals: Sources/Test/Timboz - Pony/vocals.wav
+  style: Screamo Metal
+  test_set: 1
+  title: Pony
+- artist: Titanium
+  audio_filepath:
+    bass: Sources/Dev/Titanium - Haunted Age/bass.wav
+    drums: Sources/Dev/Titanium - Haunted Age/drums.wav
+    mixture: Mixtures/Dev/Titanium - Haunted Age/mixture.wav
+    other: Sources/Dev/Titanium - Haunted Age/other.wav
+    vocals: Sources/Dev/Titanium - Haunted Age/vocals.wav
+  style: Black Metal
+  test_set: 0
+  title: Haunted Age
+- artist: Tom McKenzie
+  audio_filepath:
+    bass: Sources/Test/Tom McKenzie - Directions/bass.wav
+    drums: Sources/Test/Tom McKenzie - Directions/drums.wav
+    mixture: Mixtures/Test/Tom McKenzie - Directions/mixture.wav
+    other: Sources/Test/Tom McKenzie - Directions/other.wav
+    vocals: Sources/Test/Tom McKenzie - Directions/vocals.wav
+  style: Acoustic Singer-Songwriter
+  test_set: 1
+  title: Directions
+- artist: Traffic Experiment
+  audio_filepath:
+    bass: Sources/Dev/Traffic Experiment - Once More (With Feeling)/bass.wav
+    drums: Sources/Dev/Traffic Experiment - Once More (With Feeling)/drums.wav
+    mixture: Mixtures/Dev/Traffic Experiment - Once More (With Feeling)/mixture.wav
+    other: Sources/Dev/Traffic Experiment - Once More (With Feeling)/other.wav
+    vocals: Sources/Dev/Traffic Experiment - Once More (With Feeling)/vocals.wav
+  style: Melodic Alt Rock
+  test_set: 0
+  title: Once More (With Feeling)
+- artist: Traffic Experiment
+  audio_filepath:
+    bass: Sources/Test/Traffic Experiment - Sirens/bass.wav
+    drums: Sources/Test/Traffic Experiment - Sirens/drums.wav
+    mixture: Mixtures/Test/Traffic Experiment - Sirens/mixture.wav
+    other: Sources/Test/Traffic Experiment - Sirens/other.wav
+    vocals: Sources/Test/Traffic Experiment - Sirens/vocals.wav
+  style: Melodic Alt Rock
+  test_set: 1
+  title: Sirens
+- artist: Triviul
+  audio_filepath:
+    bass: Sources/Dev/Triviul - Angelsaint/bass.wav
+    drums: Sources/Dev/Triviul - Angelsaint/drums.wav
+    mixture: Mixtures/Dev/Triviul - Angelsaint/mixture.wav
+    other: Sources/Dev/Triviul - Angelsaint/other.wav
+    vocals: Sources/Dev/Triviul - Angelsaint/vocals.wav
+  style: Leftfield Pop/Electronica
+  test_set: 0
+  title: Angelsaint
+- artist: Triviul
+  audio_filepath:
+    bass: Sources/Test/Triviul - Dorothy/bass.wav
+    drums: Sources/Test/Triviul - Dorothy/drums.wav
+    mixture: Mixtures/Test/Triviul - Dorothy/mixture.wav
+    other: Sources/Test/Triviul - Dorothy/other.wav
+    vocals: Sources/Test/Triviul - Dorothy/vocals.wav
+  style: Leftfield Pop/Electronica
+  test_set: 1
+  title: Dorothy
+- artist: Triviul feat. The Fiend
+  audio_filepath:
+    bass: Sources/Dev/Triviul feat. The Fiend - Widow/bass.wav
+    drums: Sources/Dev/Triviul feat. The Fiend - Widow/drums.wav
+    mixture: Mixtures/Dev/Triviul feat. The Fiend - Widow/mixture.wav
+    other: Sources/Dev/Triviul feat. The Fiend - Widow/other.wav
+    vocals: Sources/Dev/Triviul feat. The Fiend - Widow/vocals.wav
+  style: Urban R&B/Pop
+  test_set: 0
+  title: Widow
+- artist: Voelund
+  audio_filepath:
+    bass: Sources/Test/Voelund - Comfort Lives In Belief/bass.wav
+    drums: Sources/Test/Voelund - Comfort Lives In Belief/drums.wav
+    mixture: Mixtures/Test/Voelund - Comfort Lives In Belief/mixture.wav
+    other: Sources/Test/Voelund - Comfort Lives In Belief/other.wav
+    vocals: Sources/Test/Voelund - Comfort Lives In Belief/vocals.wav
+  style: Laid-back Blues-Rock
+  test_set: 1
+  title: Comfort Lives In Belief
+- artist: Wall Of Death
+  audio_filepath:
+    bass: Sources/Dev/Wall Of Death - Femme/bass.wav
+    drums: Sources/Dev/Wall Of Death - Femme/drums.wav
+    mixture: Mixtures/Dev/Wall Of Death - Femme/mixture.wav
+    other: Sources/Dev/Wall Of Death - Femme/other.wav
+    vocals: Sources/Dev/Wall Of Death - Femme/vocals.wav
+  style: Black Metal
+  test_set: 0
+  title: Femme
+- artist: We Fell From The Sky
+  audio_filepath:
+    bass: Sources/Test/We Fell From The Sky - Not You/bass.wav
+    drums: Sources/Test/We Fell From The Sky - Not You/drums.wav
+    mixture: Mixtures/Test/We Fell From The Sky - Not You/mixture.wav
+    other: Sources/Test/We Fell From The Sky - Not You/other.wav
+    vocals: Sources/Test/We Fell From The Sky - Not You/vocals.wav
+  style: High-Energy Heavy Rock
+  test_set: 1
+  title: Not You
+- artist: Young Griffo
+  audio_filepath:
+    bass: Sources/Dev/Young Griffo - Blood To Bone/bass.wav
+    drums: Sources/Dev/Young Griffo - Blood To Bone/drums.wav
+    mixture: Mixtures/Dev/Young Griffo - Blood To Bone/mixture.wav
+    other: Sources/Dev/Young Griffo - Blood To Bone/other.wav
+    vocals: Sources/Dev/Young Griffo - Blood To Bone/vocals.wav
+  style: Anthemic Heavy Rock
+  test_set: 0
+  title: Blood To Bone
+- artist: Young Griffo
+  audio_filepath:
+    bass: Sources/Test/Young Griffo - Facade/bass.wav
+    drums: Sources/Test/Young Griffo - Facade/drums.wav
+    mixture: Mixtures/Test/Young Griffo - Facade/mixture.wav
+    other: Sources/Test/Young Griffo - Facade/other.wav
+    vocals: Sources/Test/Young Griffo - Facade/vocals.wav
+  style: Anthemic Heavy Rock
+  test_set: 1
+  title: Facade
+- artist: Young Griffo
+  audio_filepath:
+    bass: Sources/Dev/Young Griffo - Pennies/bass.wav
+    drums: Sources/Dev/Young Griffo - Pennies/drums.wav
+    mixture: Mixtures/Dev/Young Griffo - Pennies/mixture.wav
+    other: Sources/Dev/Young Griffo - Pennies/other.wav
+    vocals: Sources/Dev/Young Griffo - Pennies/vocals.wav
+  style: Anthemic Heavy Rock
+  test_set: 0
+  title: Pennies
+- artist: Zeno
+  audio_filepath:
+    bass: Sources/Test/Zeno - Signs/bass.wav
+    drums: Sources/Test/Zeno - Signs/drums.wav
+    mixture: Mixtures/Test/Zeno - Signs/mixture.wav
+    other: Sources/Test/Zeno - Signs/other.wav
+    vocals: Sources/Test/Zeno - Signs/vocals.wav
+  style: Epic Indie Rock
+  test_set: 1
+  title: Signs

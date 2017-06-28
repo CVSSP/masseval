@@ -1,5 +1,5 @@
-mass
-====
+mass_eval
+=========
 
 Python library for evaluating Musical Audio Source Separation techniques.
 

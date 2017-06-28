@@ -10,7 +10,7 @@ setup(
     author='Dominic Ward, Hagen Wierstorf',
     author_email='dw0031@surrey.ac.uk',
     url='',
-    packages=['mass-eval'],
+    packages=['mass_eval'],
     long_description=long_description,
     classifiers=[
         "License :: OSI Approved :: MIT License",

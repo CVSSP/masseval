@@ -3,7 +3,9 @@ import os
 import sys
 import mass_datasets
 
-def get_sisec_df(path='../../../data/csv/sisec_mus_2017_full.csv'):
+def get_sisec_df(base_path='/vol/vssp/maruss/data2/MUS2017',
+                 yaml_path='~/data/DSD100.yaml',
+                 path='../../../data/csv/sisec_mus_2017_full.csv'):
 
     '''
     Returns the SiSEC17 data as a pandas DataFrame, excluding the test set and
@@ -31,13 +33,16 @@ def get_sisec_df(path='../../../data/csv/sisec_mus_2017_full.csv'):
                                         'accompaniment', 'vocals'])
     )
 
+    filepaths = get_audio_filepaths(df, base_path, yaml_path)
+    df['filepath'] = filepaths
+
     return df
 
 
 def get_dsd100_df(base_path='/vol/vssp/maruss/data2/MUS2017',
                   yaml_path='~/data/DSD100.yaml'):
 
-    ds = datasets.Dataset.read(yaml_path)
+    ds = mass_datasets.Dataset.read(yaml_path)
     ds.base_path = base_path
     frame = ds.to_pandas_df()
 

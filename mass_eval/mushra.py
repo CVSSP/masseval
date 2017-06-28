@@ -195,7 +195,7 @@ if __name__ == '__main__':
     import pandas as pd
     import numpy as np
 
-    df = get_sisec_df('../../../data/csv/sisec_mus_2017_full.csv')
+    df = get_sisec_df()
 
     exclude_tracks = []
     mix_sample = pd.DataFrame()

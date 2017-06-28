@@ -1,6 +1,6 @@
 from . import analysis_utils, data_management
-from mass_eval.evaluation.analysis_utils import find_outliers, interquartile_range, diff_sampler
-from mass_eval.evaluation.data_management import get_audio_filepaths
+from mass_eval.analysis_utils import find_outliers, interquartile_range, diff_sampler
+from mass_eval.data_management import get_audio_filepaths
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -98,9 +98,6 @@ def get_sample(df,
         sb.swarmplot(sample.track_id, sample.score, color=".25")
         plt.show()
 
-    filepaths = get_audio_filepaths(sample)
-    sample['filepath'] = filepaths
-
     return sample
 
 
@@ -116,8 +113,5 @@ def get_all_stems(df, sample):
         select = df[(df['track_id'] == row['track_id']) &
                     (df['method_id'] == row['method_id'])]
         df_out = df_out.append(select)
-
-    filepaths = get_audio_filepaths(df_out)
-    df_out['filepath'] = filepaths
 
     return df_out

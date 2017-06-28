@@ -2,7 +2,7 @@ import os
 from untwist import data, transforms, utilities
 import pandas as pd
 import numpy as np
-from generate_anchors import Anchor
+from . import generate_anchors
 
 
 def load_audio(df, col='filepath', force_mono=False, key_prepend='',
@@ -95,9 +95,9 @@ def write_mixture_from_track_sample(sample,
         accomp = sum(other for name, other in others.items())
 
         # Anchors
-        anchor_creator = Anchor(target, list(others.values()))
+        anchor_creator = generate_anchors.Anchor(target, list(others.values()))
         target_anchors = anchor_creator.create()
-        anchor_creator = Anchor(accomp, list(others.values()))
+        anchor_creator = generate_anchors.Anchor(accomp, list(others.values()))
         accomp_anchors = anchor_creator.create()
 
         distortion = getattr(target_anchors, 'Distortion')
@@ -175,7 +175,7 @@ def write_audio_from_track_sample(sample,
                             start, end)
 
         # Generate anchors
-        anchor_creator = Anchor(ref[ref_key], list(others.values()))
+        anchor_creator = generate_anchors.Anchor(ref[ref_key], list(others.values()))
         anchors = anchor_creator.create()
 
         # Write audio

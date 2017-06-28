@@ -1,15 +1,7 @@
 import pandas as pd
 import os
 import sys
-mass_path = os.path.abspath(
-    os.path.join(os.path.realpath(__file__), '../../mass-datasets')
-)
-sys.path.append(os.path.join(mass_path, 'python'))
-try:
-    import datasets
-except:
-    raise
-
+import mass_datasets
 
 def get_sisec_df(path='../../../data/csv/sisec_mus_2017_full.csv'):
 
@@ -42,11 +34,10 @@ def get_sisec_df(path='../../../data/csv/sisec_mus_2017_full.csv'):
     return df
 
 
-def get_dsd100_df(base_path='/vol/vssp/maruss/data2/MUS2017'):
+def get_dsd100_df(base_path='/vol/vssp/maruss/data2/MUS2017',
+                  yaml_path='~/data/DSD100.yaml'):
 
-    ds = datasets.Dataset.read(
-        os.path.join(mass_path, 'data/DSD100.yaml')
-    )
+    ds = datasets.Dataset.read(yaml_path)
     ds.base_path = base_path
     frame = ds.to_pandas_df()
 
@@ -118,10 +109,7 @@ def get_reference_filepath(df,
 
     return out
 
-
-def get_others_filepaths(df,
-                         data_path='../../../data/yaml/DSD100.yaml',
-                         base_path='/vol/vssp/datasets/audio/DSD100'):
+def get_others_filepaths(df, base_path='/vol/vssp/datasets/audio/DSD100'):
     '''
     Given a DataFrame with the sisec17 data, returns the filepaths of the
     corresponding reference stimuli from DSD100.

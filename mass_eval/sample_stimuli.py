@@ -1,5 +1,6 @@
-from analysis_utils import find_outliers, interquartile_range, diff_sampler
-from data_management import get_audio_filepaths
+from . import analysis_utils, data_management
+from mass_eval.evaluation.analysis_utils import find_outliers, interquartile_range, diff_sampler
+from mass_eval.evaluation.data_management import get_audio_filepaths
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt

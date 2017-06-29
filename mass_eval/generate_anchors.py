@@ -71,6 +71,7 @@ class Anchor:
         x_fft[:, idx] = 0
 
         anchor = self.istft.process(x_fft)
+        anchor = anchor[:self.target.num_frames]
 
         return anchor.normalize()
 
@@ -159,6 +160,7 @@ class Anchor:
             target_loudness - noise_loudness)
 
         anchor = self.target + gain * musical_noise
+        anchor = anchor[:self.target.num_frames]
 
         return anchor.normalize()
 
@@ -185,6 +187,7 @@ class Anchor:
             signals.append(signal)
 
         anchor = sum(signals)
+        anchor = anchor[:self.target.num_frames]
 
         return anchor.normalize()
 

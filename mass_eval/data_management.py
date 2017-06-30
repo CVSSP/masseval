@@ -2,10 +2,9 @@ import pandas as pd
 import os
 import sys
 import mass_datasets
+from . import config
 
-def get_sisec_df(base_path='/vol/vssp/maruss/data2/MUS2017',
-                 yaml_path='~/data/DSD100.yaml',
-                 path='../../../data/csv/sisec_mus_2017_full.csv'):
+def get_sisec_df():
 
     '''
     Returns the SiSEC17 data as a pandas DataFrame, excluding the test set and
@@ -15,7 +14,7 @@ def get_sisec_df(base_path='/vol/vssp/maruss/data2/MUS2017',
     files were currupt, and thus have been excluded from the submissions.
     '''
 
-    df = pd.read_csv(path)
+    df = pd.read_csv(config.mus_csv)
 
     # test set only, no IBM
     df = df[(df.is_dev == 0) &
@@ -33,32 +32,29 @@ def get_sisec_df(base_path='/vol/vssp/maruss/data2/MUS2017',
                                         'accompaniment', 'vocals'])
     )
 
-    filepaths = get_audio_filepaths(df, base_path, yaml_path)
+    filepaths = get_audio_filepaths(df)
     df['filepath'] = filepaths
 
     return df
 
 
-def get_dsd100_df(base_path='/vol/vssp/maruss/data2/MUS2017',
-                  yaml_path='~/data/DSD100.yaml'):
+def get_dsd100_df(base_path=config.dsd_base_path):
 
-    ds = mass_datasets.Dataset.read(yaml_path)
+    ds = mass_datasets.Dataset.read(config.dsd_yaml)
     ds.base_path = base_path
     frame = ds.to_pandas_df()
 
     return frame
 
 
-def get_audio_filepaths(df,
-                        base_path='/vol/vssp/maruss/data2/MUS2017',
-                        yaml_path='~/data/DSD100.yaml'):
+def get_audio_filepaths(df):
     '''
     Given a DataFrame derived from SiSEC2017 csv,
     returns a Series of filepaths to the wav files in MUS2017.
     Indices correspond to those in the given DataFrame.
     '''
 
-    frame = get_dsd100_df(base_path, yaml_path)
+    frame = get_dsd100_df(config.mus_base_path)
 
     files_to_get = []
     for idx, row in df.iterrows():
@@ -87,15 +83,13 @@ def get_audio_filepaths(df,
     return pd.Series(files_to_get, index=df.index)
 
 
-def get_reference_filepath(df,
-                           base_path='/vol/vssp/datasets/audio/DSD100',
-                           yaml_path='~/data/DSD100.yaml'):
+def get_reference_filepath(df):
     '''
     Given a DataFrame with the sisec17 data, returns the filepaths of the
     corresponding reference stimuli from DSD100.
     '''
 
-    frame = get_dsd100_df(base_path, yaml_path)
+    frame = get_dsd100_df(config.dsd_base_path)
 
     group = df.groupby('track_id')
 
@@ -116,15 +110,13 @@ def get_reference_filepath(df,
 
     return out
 
-def get_others_filepaths(df,
-                         base_path='/vol/vssp/datasets/audio/DSD100',
-                         yaml_path='~/data/DSD100.yaml'):
+def get_others_filepaths(df):
     '''
     Given a DataFrame with the sisec17 data, returns the filepaths of the
     corresponding reference stimuli from DSD100.
     '''
 
-    frame = get_dsd100_df(base_path, yaml_path)
+    frame = get_dsd100_df(config.dsd_base_path)
 
     group = df.groupby('track_id')
 

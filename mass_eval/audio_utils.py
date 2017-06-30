@@ -102,7 +102,7 @@ def write_mixture_from_track_sample(sample,
 
         distortion = getattr(target_anchors, 'Distortion')
         artefacts = getattr(target_anchors, 'Artefacts')
-        target_anchor = artefacts + 0.5 * distortion
+        target_anchor = artefacts + distortion
         target_anchor.loudness = target_loudness
 
         distortion = getattr(accomp_anchors, 'Distortion')

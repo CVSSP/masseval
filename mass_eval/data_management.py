@@ -1,8 +1,7 @@
 import pandas as pd
-import os
-import sys
 import mass_datasets
 from . import config
+
 
 def get_sisec_df():
 
@@ -102,32 +101,11 @@ def append_dsd100_filepaths(sample):
             title = g['title'].split('- ')[1]
 
             temp = df[(df['title'].str.contains(title)) &
-                    (df['audio'] == g['target'])]
+                      (df['audio'] == g['target'])]
 
             sample.loc[idx, 'ref_filepath'] = temp['audio_filepath'].values[0]
 
     return sample
-
-
-
-
-    '''
-    out = pd.DataFrame()
-
-    for idx, g in sample.groupby('track_id'):
-
-        row = g.iloc[0]
-
-        title = row['title'].split('- ')[1]
-
-        temp = df[(df['title'].str.contains(title)) &
-                  (df['audio'].isin(g['target']))].copy()
-
-        temp['track_id'] = row['track_id']
-        temp.rename(columns={'audio_filepath': 'filepath'}, inplace=True)
-
-        out = out.append(temp)
-    '''
 
 
 def get_reference_filepath(df):
@@ -156,6 +134,7 @@ def get_reference_filepath(df):
         out = out.append(temp)
 
     return out
+
 
 def get_others_filepaths(df):
     '''

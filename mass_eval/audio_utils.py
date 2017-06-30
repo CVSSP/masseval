@@ -60,42 +60,57 @@ def segment(wave, start, end, ramp_dur=0.02):
     return wave
 
 
-def write_mixture_from_track_sample(sample,
-                                    ref_path,
-                                    others_path,
-                                    directory,
-                                    force_mono=True,
-                                    target_loudness=-23,
-                                    mixing_levels=[-12, -6, 0, 6, 12]):
+def write_mixtures_from_sample(sample,
+                               target='vocals',
+                               directory=None,
+                               force_mono=True,
+                               target_loudness=-23,
+                               mixing_levels=[-12, -6, 0, 6, 12]):
 
     # Iterate over the tracks and write audio out:
-    for g_sample, g_ref, g_others in zip(sample.groupby('track_id'),
-                                         ref_path.groupby('track_id'),
-                                         others_path.groupby('track_id')):
+    for idx, g_sample in sample.groupby('track_id'):
 
         # Prepare saving of audio
         folder = '{0}-{1}-{2}'.format(
             'mix',
-            g_sample[1].iloc[0]['track_id'],
-            g_sample[1].iloc[0]['metric'])
+            g_sample.iloc[0]['track_id'],
+            g_sample.iloc[0]['metric'])
+
         full_path = os.path.join(directory, folder)
+
         if not os.path.exists(full_path):
             os.makedirs(full_path)
 
+        '''
+        Reference audio
+        '''
+
+        ref_sample = g_sample[(g_sample.method == g_sample.iloc[0]['method'])]
+
         # Reference target
-        ref = load_audio(g_ref[1], 'filepath', force_mono, 'ref')
+        ref = load_audio(ref_sample[ref_sample.target == target],
+                         'ref_filepath',
+                         force_mono,
+                         'ref')
+
         # Find portion of track to take
         (ref_key, ref_audio), = ref.items()
         start, end = find_active_portion(ref_audio, 7, 75)
-        target = segment(ref_audio, start, end)
+        target_audio = segment(ref_audio, start, end)
 
-        # Reference other stems
-        others = load_audio(g_others[1], 'filepath', force_mono, 'other',
-                            start, end)
+        # Reference non-target stems
+        others = load_audio(
+            g_sample[~g_sample['ref_filepath'].isnull()],
+            'ref_filepath',
+            force_mono,
+            'other',
+            start,
+            end)
+
         accomp = sum(other for name, other in others.items())
 
         # Anchors
-        anchor_creator = generate_anchors.Anchor(target, list(others.values()))
+        anchor_creator = generate_anchors.Anchor(target_audio, list(others.values()))
         target_anchors = anchor_creator.create()
         anchor_creator = generate_anchors.Anchor(accomp, list(others.values()))
         accomp_anchors = anchor_creator.create()
@@ -112,37 +127,63 @@ def write_mixture_from_track_sample(sample,
 
         # Reference and anchor mixes
         for level in mixing_levels:
-            name = 'ref_mix_' + str(level) + 'dB'
-            mix = utilities.conversion.db_to_amp(level) * target + accomp
+
+            name = 'ref_mix_{}dB'.format(level)
+            mix = utilities.conversion.db_to_amp(level) * target_audio + accomp
             write_wav(mix, os.path.join(full_path, name + '.wav'),
                       target_loudness)
-            name = 'anchor_quality_mix_' + str(level) + 'dB'
-            mix = utilities.conversion.db_to_amp(level) * target_anchor \
-                + accomp_anchor
+
+            name = 'anchor_quality_mix_{}dB'.format(level)
+            mix = (utilities.conversion.db_to_amp(level) * target_anchor +
+                   accomp_anchor)
             write_wav(mix, os.path.join(full_path, name + '.wav'),
                       target_loudness)
-            name = 'anchor_level_mix_' + str(level) + 'dB'
-            mix = utilities.conversion.db_to_amp(level - 14) \
-                * target + accomp
+
+            name = 'anchor_level_mix_{}dB'.format(level)
+            mix = (utilities.conversion.db_to_amp(level - 14) *
+                   target_audio + accomp)
             write_wav(mix, os.path.join(full_path, name + '.wav'),
                       target_loudness)
 
         # Mixes per method
-        for method_name, method_sample in g_sample[1].groupby('method'):
-            # Get vocals and accompaniment
-            index = method_sample['target'] == 'vocals'
-            vocals = load_audio(method_sample[index], 'filepath',
-                                force_mono, 'vocals', start, end)
-            index = method_sample['target'] == 'accompaniment'
-            accompaniments = load_audio(method_sample[index], 'filepath',
-                                        force_mono, 'accomp', start, end)
-            # Mixing
-            (_, vocal), = vocals.items()
-            (_, accomp), = accompaniments.items()
-            for level in mixing_levels:
-                name = method_name + '_mix_' + str(level) + 'dB'
+        for method_name, method_sample in g_sample.groupby('method'):
 
-                mix = utilities.conversion.db_to_amp(level) * vocal + accomp
+            # Get target and accompaniment
+            index = method_sample['target'] == target
+
+            target_audio = load_audio(method_sample[index], 'filepath',
+                                      force_mono, target, start, end)
+
+            (_, target_audio), = target_audio.items()
+
+            if 'accompaniment' in method_sample['target']:
+
+                index = method_sample['target'] == 'accompaniment'
+
+                accompaniments = load_audio(method_sample[index], 'filepath',
+                                            force_mono, 'accomp', start, end)
+
+                (_, accomp), = accompaniments.items()
+
+            else:
+
+                others = load_audio(
+                    method_sample[~method_sample['ref_filepath'].isnull()],
+                    'ref_filepath',
+                    force_mono,
+                    'other',
+                    start,
+                    end)
+
+                accomp = sum(other for name, other in others.items())
+
+            # Mixing
+            for level in mixing_levels:
+                name = '{0}_mix_{1}dB'.format(method_name, level)
+
+                mix = (utilities.conversion.db_to_amp(level) * target_audio +
+                       accomp)
+
                 write_wav(mix, os.path.join(full_path, name + '.wav'),
                           target_loudness)
 

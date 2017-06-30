@@ -1,6 +1,6 @@
 from . import analysis_utils, data_management
 from mass_eval.analysis_utils import find_outliers, interquartile_range, diff_sampler
-from mass_eval.data_management import get_audio_filepaths
+from mass_eval.data_management import get_audio_filepaths, append_dsd100_filepaths
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -54,6 +54,7 @@ def sample_stimuli_algos(df,
 
     df = df.loc[loc]
 
+
     return df
 
 
@@ -97,6 +98,13 @@ def get_sample(df,
         sb.boxplot(sample.score, groupby=sample.track_id)
         sb.swarmplot(sample.track_id, sample.score, color=".25")
         plt.show()
+
+    # Add all other sources back in
+    sample = df[(df.metric == metric) &
+                df.track_id.isin(sample.track_id) &
+                df.method.isin(sample.method)]
+
+    sample = append_dsd100_filepaths(sample)
 
     return sample
 

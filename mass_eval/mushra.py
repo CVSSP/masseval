@@ -195,25 +195,26 @@ def mushra_mixture_from_track_sample(sample,
 
 if __name__ == '__main__':
 
-    from sample_stimuli import get_sample
-    from data_management import get_sisec_df
+    import mass_eval
     import pandas as pd
     import numpy as np
 
-    df = get_sisec_df()
+    df = mass_eval.data_management.get_sisec_df()
 
     exclude_tracks = []
     mix_sample = pd.DataFrame()
     for metric in ['SDR', 'SAR', 'SIR']:
 
-        sample = get_sample(df,
-                            num_tracks=2,
-                            num_algos=4,
-                            metric=metric,
-                            target='vocals',
-                            only_these_algos=None,
-                            exclude_tracks=exclude_tracks,
-                            selection_plot=False)
+        sample = mass_eval.sample.stimuli.get_sample(
+                df,
+                num_tracks=2,
+                num_algos=4,
+                metric=metric,
+                target='vocals',
+                only_these_algos=None,
+                exclude_tracks=exclude_tracks,
+                selection_plot=False)
+
         tracks = sample['track_id'].values
         exclude_tracks = np.append(exclude_tracks, np.unique(tracks))
         mix_sample = pd.concat([mix_sample, sample])

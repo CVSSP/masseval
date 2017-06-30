@@ -1,8 +1,7 @@
 import pandas as pd
-import os
-import sys
 import mass_datasets
 from . import config
+
 
 def get_sisec_df():
 
@@ -109,6 +108,7 @@ def get_reference_filepath(df):
         out = out.append(temp)
 
     return out
+
 
 def get_others_filepaths(df):
     '''

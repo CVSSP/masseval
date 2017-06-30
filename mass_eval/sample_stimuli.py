@@ -1,6 +1,4 @@
-from . import analysis_utils, data_management
-from mass_eval.analysis_utils import find_outliers, interquartile_range, diff_sampler
-from mass_eval.data_management import get_audio_filepaths
+from . import analysis_utils
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -26,13 +24,13 @@ def sample_stimuli_algos(df,
 
     if remove_outliers:
         outliers = df.groupby('track_id')['score'].apply(
-            lambda g: find_outliers(g))
+            lambda g: analysis_utils.find_outliers(g))
 
         df = df[outliers == False]  # noqa: E712
 
     # Take IQR for each sample and remove lower 50%
     method_iqr = df.groupby(['track_id']).agg(
-        {'score': interquartile_range}).reset_index()
+        {'score': analysis_utils.interquartile_range}).reset_index()
 
     select = method_iqr[
         method_iqr['score'] > method_iqr['score'].quantile(0.5)]
@@ -43,14 +41,15 @@ def sample_stimuli_algos(df,
     medians = df.groupby(['track_id']).agg(
         {'score': np.median}).reset_index()
 
-    sample = diff_sampler(medians['score'], num_tracks)
+    sample = analysis_utils.diff_sampler(medians['score'], num_tracks)
     select = medians[medians['score'].isin(sample)]
 
     df = df[df.track_id.isin(select.track_id)]
 
     # Now sample algos within each track
     loc = df.groupby('track_id')['score'].apply(
-        lambda x: diff_sampler(x, num_algos)).reset_index(level=0).index
+        lambda x: analysis_utils.diff_sampler(
+            x, num_algos)).reset_index(level=0).index
 
     df = df.loc[loc]
 

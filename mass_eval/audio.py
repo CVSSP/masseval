@@ -109,13 +109,13 @@ def write_mixtures_from_sample(sample,
         anchors = anchor.Anchor(target_audio, list(others.values()))
         distortion = anchors.distortion()
         artefacts = anchors.artefacts()
-        target_anchor = combine_with_same_loudness(distortion, artefacts)
+        target_anchor = combine_anchors(distortion, artefacts)
 
         # Get accompaniment anchor
         anchors = anchor.Anchor(accomp_audio, list(others.values()))
         distortion = anchors.distortion()
         artefacts = anchors.artefacts()
-        accomp_anchor = combine_with_same_loudness(distortion, artefacts)
+        accomp_anchor = combine_anchors(distortion, artefacts)
 
         # Reference and anchor mixes
         for level in mixing_levels:
@@ -128,8 +128,8 @@ def write_mixtures_from_sample(sample,
 
             name = 'anchor_quality_mix_{}dB'.format(level)
             mix = (utilities.conversion.db_to_amp(level) *
-                   (0.7 * target_anchor + 0.3 * target_audio) +
-                   (0.7 * accomp_anchor + 0.3 * accomp_audio))
+                   (0.8 * target_anchor + 0.2 * target_audio) +
+                   (0.8 * accomp_anchor + 0.2 * accomp_audio))
             write_wav(mix, os.path.join(full_path, name + '.wav'),
                       target_loudness)
 
@@ -257,6 +257,10 @@ def combine_with_same_loudness(sig1, sig2):
     gain = utilities.conversion.db_to_amp(sig1_loudness - sig2_loudness)
     return sig1 + gain * sig2
 
+def combine_anchors(distortion, artefact):
+    gain = utilities.conversion.db_to_amp(
+        loudness(distortion) - loudness(artefact))
+    return 0.7 * distortion + 0.3 * gain * artefact
 
 def loudness(sig):
     ebur128 = analysis.loudness.EBUR128(sample_rate=sig.sample_rate)

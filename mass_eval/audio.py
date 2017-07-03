@@ -151,7 +151,7 @@ def write_mixtures_from_sample(sample,
 
             (_, target_audio), = target_audio.items()
 
-            if 'accompaniment' in method_sample['target']:
+            if 'accompaniment' in method_sample['target'].values:
 
                 index = method_sample['target'] == 'accompaniment'
 
@@ -163,7 +163,7 @@ def write_mixtures_from_sample(sample,
             else:
 
                 others = load_audio(
-                    method_sample[method_sample.target != 'target'],
+                    method_sample[method_sample.target != target],
                     force_mono,
                     start,
                     end)

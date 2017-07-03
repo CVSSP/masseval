@@ -49,15 +49,15 @@ class Anchor:
         self.ebur128 = analysis.loudness.EBUR128(
             sample_rate=target.sample_rate)
 
-    def distorted_anchor(self):
+    def distortion(self):
         '''
-        Distortion anchor for a MUSHRA listening test.
-        The anchor is created by low-pass filtering the target source
-        signal to a 3.5 kHz cutoff frequency and by randomly setting 20%
-        of the remaining time-frequency coefficients to zero, see [1].
+        Returns the distortion signal created by low-pass filtering the
+        target source signal to a 3.5 kHz cutoff frequency and by randomly
+        setting 20% of the remaining time-frequency coefficients to zero,
+        see [1].
 
-        WARNING: this code can't reproduce the distortion anchor from
-        [1] exactly!
+        WARNING: this code can't reproduce the distortion from [1]
+        exactly!
         '''
 
         x_fft = self.stft.process(self.target)
@@ -70,8 +70,22 @@ class Anchor:
                                replace=False)
         x_fft[:, idx] = 0
 
-        anchor = self.istft.process(x_fft)
-        anchor = anchor[:self.target.num_frames]
+        distortion = self.istft.process(x_fft)
+
+        return distortion[:self.target.num_frames]
+
+    def distorted_anchor(self):
+        '''
+        Distortion anchor for a MUSHRA listening test.
+        The anchor is created by low-pass filtering the target source
+        signal to a 3.5 kHz cutoff frequency and by randomly setting 20%
+        of the remaining time-frequency coefficients to zero, see [1].
+
+        WARNING: this code can't reproduce the distortion anchor from
+        [1] exactly!
+        '''
+
+        anchor = self.distortion()
 
         return anchor.normalize()
 
@@ -140,7 +154,7 @@ class Anchor:
 
         musical_noise = self.istft.process(x_fft)
 
-        return musical_noise
+        return musical_noise[:self.target.num_frames]
 
     def artefacts_anchor(self):
         '''
@@ -160,7 +174,6 @@ class Anchor:
             target_loudness - noise_loudness)
 
         anchor = self.target + gain * musical_noise
-        anchor = anchor[:self.target.num_frames]
 
         return anchor.normalize()
 

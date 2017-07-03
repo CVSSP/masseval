@@ -1,9 +1,45 @@
-from . import analysis_utils
-from . import data_management
+from . import dataframes
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sb
+
+
+def interquartile_range(df):
+    return df.quantile(0.75) - df.quantile(0.25)
+
+
+def find_outliers(df):
+    q1, q3 = df.quantile(0.25), df.quantile(0.75)
+    iqr = q3 - q1
+    return (df < q1 - iqr * 1.5) | (df > q3 + iqr * 1.5)
+
+
+def diff_sampler(df, size):
+
+    df = df.sort_values()
+
+    step = (np.max(df) - np.min(df)) / (size - 1)
+    alpha = 0.01
+
+    idx = []
+    while True:
+
+        idx = [0]
+        val_prev = df.iloc[0]
+
+        for i, val in enumerate(df[1:]):
+            if (val - val_prev) >= step:
+                idx.append(i + 1)
+                val_prev = val
+
+        if len(idx) > size:
+            step *= 1 + alpha
+        elif len(idx) < size:
+            step *= alpha
+        else:
+            break
+
+    return df.take(idx)
 
 
 def sample_stimuli_algos(df,
@@ -24,14 +60,13 @@ def sample_stimuli_algos(df,
     '''
 
     if remove_outliers:
-        outliers = df.groupby('track_id')['score'].apply(
-            lambda g: analysis_utils.find_outliers(g))
+        outliers = df.groupby('track_id')['score'].apply(find_outliers)
 
         df = df[outliers == False]  # noqa: E712
 
     # Take IQR for each sample and remove lower 50%
     method_iqr = df.groupby(['track_id']).agg(
-        {'score': analysis_utils.interquartile_range}).reset_index()
+        {'score': interquartile_range}).reset_index()
 
     select = method_iqr[
         method_iqr['score'] > method_iqr['score'].quantile(0.5)]
@@ -42,14 +77,14 @@ def sample_stimuli_algos(df,
     medians = df.groupby(['track_id']).agg(
         {'score': np.median}).reset_index()
 
-    sample = analysis_utils.diff_sampler(medians['score'], num_tracks)
+    sample = diff_sampler(medians['score'], num_tracks)
     select = medians[medians['score'].isin(sample)]
 
     df = df[df.track_id.isin(select.track_id)]
 
     # Now sample algos within each track
     loc = df.groupby('track_id')['score'].apply(
-        lambda x: analysis_utils.diff_sampler(
+        lambda x: diff_sampler(
             x, num_algos)).reset_index(level=0).index
 
     df = df.loc[loc]
@@ -103,22 +138,6 @@ def get_sample(df,
                 df.track_id.isin(sample.track_id) &
                 df.method.isin(sample.method)]
 
-    sample = data_management.append_dsd100_filepaths(sample)
+    sample = dataframes.add_reference_to_sample(sample)
 
     return sample
-
-
-def get_all_stems(df, sample):
-    '''
-    returns all stems for the given target data frame
-    '''
-
-    df = df[df.metric_id.isin(sample.metric_id)]
-
-    df_out = pd.DataFrame()
-    for idx, row in sample.iterrows():
-        select = df[(df['track_id'] == row['track_id']) &
-                    (df['method_id'] == row['method_id'])]
-        df_out = df_out.append(select)
-
-    return df_out

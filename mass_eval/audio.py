@@ -2,25 +2,25 @@ import os
 from untwist import data, transforms, utilities
 import pandas as pd
 import numpy as np
-from . import generate_anchors
+from . import anchor
 
 
-def load_audio(df, col='filepath', force_mono=False, key_prepend='',
-               start=None, end=None):
+def load_audio(df, force_mono=False, start=None, end=None):
 
     if isinstance(df, pd.Series):
         df = df.to_frame()
 
     out = {}
     for item in df.iterrows():
-        wav = data.audio.Wave.read(item[1][col])
+        wav = data.audio.Wave.read(item[1]['filepath'])
         if force_mono:
             wav = wav.as_mono()
 
         if start and end:
             wav = segment(wav, start, end)
 
-        key = '{0}-{1}'.format(key_prepend, item[0])
+        # key = '{0}-{1}'.format(key_prepend, item[1]['method'])
+        key = item[1]['method']
         out[key] = wav
 
     return out
@@ -85,13 +85,11 @@ def write_mixtures_from_sample(sample,
         Reference audio
         '''
 
-        ref_sample = g_sample[(g_sample.method == g_sample.iloc[0]['method'])]
+        ref_sample = g_sample[g_sample.method == 'Ref']
 
         # Reference target
         ref = load_audio(ref_sample[ref_sample.target == target],
-                         'ref_filepath',
-                         force_mono,
-                         'ref')
+                         force_mono)
 
         # Find portion of track to take
         (ref_key, ref_audio), = ref.items()
@@ -100,19 +98,19 @@ def write_mixtures_from_sample(sample,
 
         # Reference non-target stems
         others = load_audio(
-            g_sample[~g_sample['ref_filepath'].isnull()],
-            'ref_filepath',
+            ref_sample[ref_sample.target != target],
             force_mono,
-            'other',
             start,
             end)
 
         accomp = sum(other for name, other in others.items())
 
         # Anchors
-        anchor_creator = generate_anchors.Anchor(target_audio, list(others.values()))
+        anchor_creator = anchor.Anchor(target_audio,
+                                                 list(others.values()))
         target_anchors = anchor_creator.create()
-        anchor_creator = generate_anchors.Anchor(accomp, list(others.values()))
+        anchor_creator = anchor.Anchor(accomp,
+                                                 list(others.values()))
         accomp_anchors = anchor_creator.create()
 
         distortion = getattr(target_anchors, 'Distortion')
@@ -146,13 +144,14 @@ def write_mixtures_from_sample(sample,
                       target_loudness)
 
         # Mixes per method
-        for method_name, method_sample in g_sample.groupby('method'):
+        not_ref_sample = g_sample[g_sample.method != 'Ref']
+        for method_name, method_sample in not_ref_sample.groupby('method'):
 
             # Get target and accompaniment
             index = method_sample['target'] == target
 
-            target_audio = load_audio(method_sample[index], 'filepath',
-                                      force_mono, target, start, end)
+            target_audio = load_audio(method_sample[index],
+                                      force_mono, start, end)
 
             (_, target_audio), = target_audio.items()
 
@@ -160,18 +159,16 @@ def write_mixtures_from_sample(sample,
 
                 index = method_sample['target'] == 'accompaniment'
 
-                accompaniments = load_audio(method_sample[index], 'filepath',
-                                            force_mono, 'accomp', start, end)
+                accompaniments = load_audio(method_sample[index],
+                                            force_mono, start, end)
 
                 (_, accomp), = accompaniments.items()
 
             else:
 
                 others = load_audio(
-                    method_sample[~method_sample['ref_filepath'].isnull()],
-                    'ref_filepath',
+                    method_sample[method_sample.target != 'target'],
                     force_mono,
-                    'other',
                     start,
                     end)
 
@@ -188,42 +185,49 @@ def write_mixtures_from_sample(sample,
                           target_loudness)
 
 
-def write_audio_from_track_sample(sample,
-                                  ref_path,
-                                  others_path,
-                                  directory,
-                                  force_mono=True,
-                                  target_loudness=-23):
+def write_target_from_sample(sample,
+                             target='vocals',
+                             directory=None,
+                             force_mono=True,
+                             target_loudness=-23):
 
     # Iterate over the tracks and write audio out:
-    for g_sample, g_ref, g_others in zip(sample.groupby('track_id'),
-                                         ref_path.groupby('track_id'),
-                                         others_path.groupby('track_id')):
+    for idx, g_sample in sample.groupby('track_id'):
 
-        ref = load_audio(g_ref[1], 'filepath', force_mono, 'ref')
+        ref_sample = g_sample[g_sample.method == 'Ref']
 
-        # find portion of track to take
+        # Reference target
+        ref = load_audio(ref_sample[ref_sample.target == target],
+                         force_mono)
+
+        # Find portion of track to take
         (ref_key, ref_audio), = ref.items()
         start, end = find_active_portion(ref_audio, 7, 75)
         ref[ref_key] = segment(ref_audio, start, end)
 
-        # Load test items at the same point in time (same segment times)
-        test_items = load_audio(g_sample[1], 'filepath', force_mono, 'test',
-                                start, end)
+        # Reference non-target stems
+        others = load_audio(ref_sample[ref_sample.target != target],
+                            force_mono,
+                            start,
+                            end)
 
-        # Ditto but for other stems
-        others = load_audio(g_others[1], 'filepath', force_mono, 'other',
-                            start, end)
+        # Load test items at the same point in time (same segment times)
+        test_items = load_audio(g_sample[(g_sample.method != 'Ref') &
+                                         (g_sample.target == target)],
+                                force_mono,
+                                start,
+                                end)
 
         # Generate anchors
-        anchor_creator = generate_anchors.Anchor(ref[ref_key], list(others.values()))
+        anchor_creator = anchor.Anchor(ref[ref_key],
+                                       list(others.values()))
         anchors = anchor_creator.create()
 
         # Write audio
         folder = '{0}-{1}-{2}'.format(
-            g_sample[1].iloc[0]['target'],
-            g_sample[1].iloc[0]['track_id'],
-            g_sample[1].iloc[0]['metric'])
+            target,
+            g_sample.iloc[0]['track_id'],
+            g_sample.iloc[0]['metric'])
 
         full_path = os.path.join(directory, folder)
 

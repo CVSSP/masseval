@@ -1,5 +1,6 @@
 import numpy as np
-from untwist import (data, utilities, transforms, analysis)
+from untwist import (data, utilities, transforms)
+from . import audio
 from collections import namedtuple
 
 
@@ -45,9 +46,6 @@ class Anchor:
                                                         target.sample_rate)
         self.trim_factor_distorted = 0.2
         self.trim_factor_artefacts = 0.99
-
-        self.ebur128 = analysis.loudness.EBUR128(
-            sample_rate=target.sample_rate)
 
     def distortion(self):
         '''
@@ -102,7 +100,7 @@ class Anchor:
 
         for i, other in enumerate(self.others):
 
-            other_loudness = self.ebur128.process(other).P
+            other_loudness = audio.loudness(other)
 
             other *= utilities.conversion.db_to_amp(
                 target_loudness - other_loudness)
@@ -124,9 +122,9 @@ class Anchor:
         interferer = self.interferer()
 
         # Now match the loudness of the global interferer to that of the target
-        target_loudness = self.ebur128.process(self.target).P
+        target_loudness = audio.loudness(self.target)
 
-        interferer_loudness = self.ebur128.process(interferer).P
+        interferer_loudness = audio.loudness(interferer)
 
         interferer *= utilities.conversion.db_to_amp(
             target_loudness - interferer_loudness)
@@ -166,14 +164,7 @@ class Anchor:
 
         artefacts = self.artefacts()
 
-        # Loudness match the two
-        target_loudness = self.ebur128.process(self.target).P
-        noise_loudness = self.ebur128.process(artefacts).P
-
-        gain = utilities.conversion.db_to_amp(
-            target_loudness - noise_loudness)
-
-        anchor = self.target + gain * artefacts
+        anchor = audio.combine_with_same_loudness(self.target, artefacts)
 
         return anchor.normalize()
 
@@ -191,7 +182,7 @@ class Anchor:
                        self.artefacts(),
                        self.interferer()]:
 
-            loudness = self.ebur128.process(signal).P
+            loudness = audio.loudness(signal)
 
             gain = utilities.conversion.db_to_amp(target_loudness - loudness)
 
@@ -236,4 +227,4 @@ if __name__ == '__main__':
 
     for name in anchors._fields:
         wav = getattr(anchors, name)
-        wav.write(name + '.wav')
+        audio.write_wav(wav, name + '.wav', target_loudness=-23)

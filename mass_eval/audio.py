@@ -1,5 +1,5 @@
 import os
-from untwist import data, transforms, utilities
+from untwist import (data, transforms, utilities, analysis)
 import pandas as pd
 import numpy as np
 from . import anchor
@@ -103,43 +103,39 @@ def write_mixtures_from_sample(sample,
             start,
             end)
 
-        accomp = sum(other for name, other in others.items())
+        accomp_audio = sum(other for name, other in others.items())
 
-        # Anchors
-        anchor_creator = anchor.Anchor(target_audio,
-                                                 list(others.values()))
-        target_anchors = anchor_creator.create()
-        anchor_creator = anchor.Anchor(accomp,
-                                                 list(others.values()))
-        accomp_anchors = anchor_creator.create()
+        # Get target anchor
+        anchors = anchor.Anchor(target_audio, list(others.values()))
+        distortion = anchors.distortion()
+        artefacts = anchors.artefacts()
+        target_anchor = combine_with_same_loudness(distortion, artefacts)
 
-        distortion = getattr(target_anchors, 'Distortion')
-        artefacts = getattr(target_anchors, 'Artefacts')
-        target_anchor = artefacts + 0.5 * distortion
-        target_anchor.loudness = target_loudness
-
-        distortion = getattr(accomp_anchors, 'Distortion')
-        artefacts = getattr(accomp_anchors, 'Artefacts')
-        accomp_anchor = artefacts + 0.5 * distortion
-        accomp_anchor.loudness = target_loudness
+        # Get accompaniment anchor
+        anchors = anchor.Anchor(accomp_audio, list(others.values()))
+        distortion = anchors.distortion()
+        artefacts = anchors.artefacts()
+        accomp_anchor = combine_with_same_loudness(distortion, artefacts)
 
         # Reference and anchor mixes
         for level in mixing_levels:
 
             name = 'ref_mix_{}dB'.format(level)
-            mix = utilities.conversion.db_to_amp(level) * target_audio + accomp
+            mix = (utilities.conversion.db_to_amp(level) * target_audio +
+                   accomp_audio)
             write_wav(mix, os.path.join(full_path, name + '.wav'),
                       target_loudness)
 
             name = 'anchor_quality_mix_{}dB'.format(level)
-            mix = (utilities.conversion.db_to_amp(level) * target_anchor +
-                   accomp_anchor)
+            mix = (utilities.conversion.db_to_amp(level) *
+                   (0.7 * target_anchor + 0.3 * target_audio) +
+                   (0.7 * accomp_anchor + 0.3 * accomp_audio))
             write_wav(mix, os.path.join(full_path, name + '.wav'),
                       target_loudness)
 
             name = 'anchor_level_mix_{}dB'.format(level)
             mix = (utilities.conversion.db_to_amp(level - 14) *
-                   target_audio + accomp)
+                   target_audio + accomp_audio)
             write_wav(mix, os.path.join(full_path, name + '.wav'),
                       target_loudness)
 
@@ -253,3 +249,15 @@ def write_wav(sig, filename, target_loudness=-23):
     # If you need 32-bit wavs, use
     sig = sig.astype('float32')
     sig.write(filename)
+
+
+def combine_with_same_loudness(sig1, sig2):
+    sig1_loudness = loudness(sig1)
+    sig2_loudness = loudness(sig2)
+    gain = utilities.conversion.db_to_amp(sig1_loudness - sig2_loudness)
+    return sig1 + gain * sig2
+
+
+def loudness(sig):
+    ebur128 = analysis.loudness.EBUR128(sample_rate=sig.sample_rate)
+    return ebur128.process(sig).P

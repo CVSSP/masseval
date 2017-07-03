@@ -20,7 +20,7 @@ def load_audio(df, force_mono=False, start=None, end=None):
             wav = segment(wav, start, end)
 
         # key = '{0}-{1}'.format(key_prepend, item[1]['method'])
-        key = item[1]['method']
+        key = '{0}-{1}'.format(item[1]['method'], item[1]['target'])
         out[key] = wav
 
     return out

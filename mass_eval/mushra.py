@@ -82,6 +82,8 @@ def mushra_mixture_from_track_sample(sample,
 
     config = mushra_mixing_config()
 
+    sample = sample[sample['method'] != 'Ref']
+
     if not os.path.exists(directory):
         os.makedirs(directory)
 

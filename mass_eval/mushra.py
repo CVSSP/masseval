@@ -167,7 +167,7 @@ def mushra_mixture_from_track_sample(sample,
                 anchor.set('url', anchor_file)
                 anchor.set('id', page_id + '_anchor')
                 anchor.set('type', 'anchor')
-                for method in g_sample[1]['method']:
+                for method in g_sample[1]['method'].unique():
                     alg = etree.SubElement(page, 'audioelement')
                     alg.set('url', method + '_mix_' + str(level) + 'dB.wav')
                     alg.set('id', page_id + '_' + method)

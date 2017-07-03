@@ -101,7 +101,7 @@ def mushra_mixture_from_track_sample(sample,
                                  interface='MUSHRA',
                                  projectReturn='save.php',
                                  randomiseOrder='true',
-                                 crossFade='0.1',
+                                 crossFade='0.01',
                                  loudness='-23')
         #   <exitText/>
         etree.SubElement(setup, 'exitText').text = config.exit_message

@@ -170,6 +170,11 @@ def write_mixtures_from_sample(sample,
 
                 accomp = sum(other for name, other in others.items())
 
+            # Fix GRA
+            if method_name in ['GRA2', 'GRA3']:
+                target_audio = -1 * target_audio
+                accomp = -1 * accomp
+
             # Mixing
             for level in mixing_levels:
                 name = '{0}_mix_{1}dB'.format(method_name, level)

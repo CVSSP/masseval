@@ -1,5 +1,5 @@
 import os
-from untwist import (data, transforms, utilities, analysis)
+from untwist import (data, transforms, utilities)
 import pandas as pd
 import numpy as np
 from . import anchor
@@ -65,7 +65,8 @@ def write_mixtures_from_sample(sample,
                                directory=None,
                                force_mono=True,
                                target_loudness=-23,
-                               mixing_levels=[-12, -6, 0, 6, 12]):
+                               mixing_levels=[-12, -6, 0, 6, 12],
+                               segment_duration=7):
 
     # Iterate over the tracks and write audio out:
     for idx, g_sample in sample.groupby('track_id'):
@@ -93,7 +94,7 @@ def write_mixtures_from_sample(sample,
 
         # Find portion of track to take
         (ref_key, ref_audio), = ref.items()
-        start, end = find_active_portion(ref_audio, 7, 75)
+        start, end = find_active_portion(ref_audio, segment_duration, 75)
         target_audio = segment(ref_audio, start, end)
 
         # Reference non-target stems
@@ -190,7 +191,8 @@ def write_target_from_sample(sample,
                              target='vocals',
                              directory=None,
                              force_mono=True,
-                             target_loudness=-23):
+                             target_loudness=-23,
+                             segment_duration=7):
 
     # Iterate over the tracks and write audio out:
     for idx, g_sample in sample.groupby('track_id'):
@@ -203,7 +205,7 @@ def write_target_from_sample(sample,
 
         # Find portion of track to take
         (ref_key, ref_audio), = ref.items()
-        start, end = find_active_portion(ref_audio, 7, 75)
+        start, end = find_active_portion(ref_audio, segment_duration, 75)
         ref[ref_key] = segment(ref_audio, start, end)
 
         # Reference non-target stems
@@ -256,17 +258,7 @@ def write_wav(sig, filename, target_loudness=-23):
     sig.write(filename)
 
 
-def combine_with_same_loudness(sig1, sig2):
-    sig1_loudness = loudness(sig1)
-    sig2_loudness = loudness(sig2)
-    gain = utilities.conversion.db_to_amp(sig1_loudness - sig2_loudness)
-    return sig1 + gain * sig2
-
 def combine_anchors(distortion, artefact):
     gain = utilities.conversion.db_to_amp(
-        loudness(distortion) - loudness(artefact))
+        distortion.loudness - artefact.loudness)
     return 0.7 * distortion + 0.3 * gain * artefact
-
-def loudness(sig):
-    ebur128 = analysis.loudness.EBUR128(sample_rate=sig.sample_rate)
-    return ebur128.process(sig).P

@@ -100,10 +100,8 @@ class Anchor:
 
         for i, other in enumerate(self.others):
 
-            other_loudness = audio.loudness(other)
-
             other *= utilities.conversion.db_to_amp(
-                target_loudness - other_loudness)
+                target_loudness - other.loudness)
 
             interferers.append(other)
 
@@ -122,12 +120,8 @@ class Anchor:
         interferer = self.interferer()
 
         # Now match the loudness of the global interferer to that of the target
-        target_loudness = audio.loudness(self.target)
-
-        interferer_loudness = audio.loudness(interferer)
-
         interferer *= utilities.conversion.db_to_amp(
-            target_loudness - interferer_loudness)
+            self.target.loudness - interferer.loudness)
 
         interferer += self.target
 
@@ -164,7 +158,10 @@ class Anchor:
 
         artefacts = self.artefacts()
 
-        anchor = audio.combine_with_same_loudness(self.target, artefacts)
+        gain = utilities.conversion.db_to_amp(
+            self.target.loudness - artefacts.loudness)
+
+        anchor = self.target + gain * artefacts
 
         return anchor.normalize()
 
@@ -182,11 +179,8 @@ class Anchor:
                        self.artefacts(),
                        self.interferer()]:
 
-            loudness = audio.loudness(signal)
-
-            gain = utilities.conversion.db_to_amp(target_loudness - loudness)
-
-            signal *= gain
+            signal *= utilities.conversion.db_to_amp(
+                target_loudness - signal.loudness)
 
             signals.append(signal)
 

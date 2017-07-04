@@ -1,5 +1,5 @@
 import os
-from untwist import data, transforms, utilities
+from untwist import (data, transforms, utilities)
 import pandas as pd
 import numpy as np
 from . import anchor
@@ -65,7 +65,8 @@ def write_mixtures_from_sample(sample,
                                directory=None,
                                force_mono=True,
                                target_loudness=-23,
-                               mixing_levels=[-12, -6, 0, 6, 12]):
+                               mixing_levels=[-12, -6, 0, 6, 12],
+                               segment_duration=7):
 
     # Iterate over the tracks and write audio out:
     for idx, g_sample in sample.groupby('track_id'):
@@ -93,7 +94,7 @@ def write_mixtures_from_sample(sample,
 
         # Find portion of track to take
         (ref_key, ref_audio), = ref.items()
-        start, end = find_active_portion(ref_audio, 7, 75)
+        start, end = find_active_portion(ref_audio, segment_duration, 75)
         target_audio = segment(ref_audio, start, end)
 
         # Reference non-target stems
@@ -103,43 +104,39 @@ def write_mixtures_from_sample(sample,
             start,
             end)
 
-        accomp = sum(other for name, other in others.items())
+        accomp_audio = sum(other for name, other in others.items())
 
-        # Anchors
-        anchor_creator = anchor.Anchor(target_audio,
-                                                 list(others.values()))
-        target_anchors = anchor_creator.create()
-        anchor_creator = anchor.Anchor(accomp,
-                                                 list(others.values()))
-        accomp_anchors = anchor_creator.create()
+        # Get target anchor
+        anchors = anchor.Anchor(target_audio, list(others.values()))
+        distortion = anchors.distortion()
+        artefacts = anchors.artefacts()
+        target_anchor = combine_anchors(distortion, artefacts)
 
-        distortion = getattr(target_anchors, 'Distortion')
-        artefacts = getattr(target_anchors, 'Artefacts')
-        target_anchor = artefacts + 0.5 * distortion
-        target_anchor.loudness = target_loudness
-
-        distortion = getattr(accomp_anchors, 'Distortion')
-        artefacts = getattr(accomp_anchors, 'Artefacts')
-        accomp_anchor = artefacts + 0.5 * distortion
-        accomp_anchor.loudness = target_loudness
+        # Get accompaniment anchor
+        anchors = anchor.Anchor(accomp_audio, list(others.values()))
+        distortion = anchors.distortion()
+        artefacts = anchors.artefacts()
+        accomp_anchor = combine_anchors(distortion, artefacts)
 
         # Reference and anchor mixes
         for level in mixing_levels:
 
             name = 'ref_mix_{}dB'.format(level)
-            mix = utilities.conversion.db_to_amp(level) * target_audio + accomp
+            mix = (utilities.conversion.db_to_amp(level) * target_audio +
+                   accomp_audio)
             write_wav(mix, os.path.join(full_path, name + '.wav'),
                       target_loudness)
 
             name = 'anchor_quality_mix_{}dB'.format(level)
-            mix = (utilities.conversion.db_to_amp(level) * target_anchor +
-                   accomp_anchor)
+            mix = (utilities.conversion.db_to_amp(level) *
+                   (0.8 * target_anchor + 0.2 * target_audio) +
+                   (0.8 * accomp_anchor + 0.2 * accomp_audio))
             write_wav(mix, os.path.join(full_path, name + '.wav'),
                       target_loudness)
 
             name = 'anchor_level_mix_{}dB'.format(level)
             mix = (utilities.conversion.db_to_amp(level - 14) *
-                   target_audio + accomp)
+                   target_audio + accomp_audio)
             write_wav(mix, os.path.join(full_path, name + '.wav'),
                       target_loudness)
 
@@ -155,7 +152,7 @@ def write_mixtures_from_sample(sample,
 
             (_, target_audio), = target_audio.items()
 
-            if 'accompaniment' in method_sample['target']:
+            if 'accompaniment' in method_sample['target'].values:
 
                 index = method_sample['target'] == 'accompaniment'
 
@@ -167,12 +164,17 @@ def write_mixtures_from_sample(sample,
             else:
 
                 others = load_audio(
-                    method_sample[method_sample.target != 'target'],
+                    method_sample[method_sample.target != target],
                     force_mono,
                     start,
                     end)
 
                 accomp = sum(other for name, other in others.items())
+
+            # Fix GRA
+            if method_name in ['GRA2', 'GRA3']:
+                target_audio = -1 * target_audio
+                accomp = -1 * accomp
 
             # Mixing
             for level in mixing_levels:
@@ -189,7 +191,8 @@ def write_target_from_sample(sample,
                              target='vocals',
                              directory=None,
                              force_mono=True,
-                             target_loudness=-23):
+                             target_loudness=-23,
+                             segment_duration=7):
 
     # Iterate over the tracks and write audio out:
     for idx, g_sample in sample.groupby('track_id'):
@@ -202,7 +205,7 @@ def write_target_from_sample(sample,
 
         # Find portion of track to take
         (ref_key, ref_audio), = ref.items()
-        start, end = find_active_portion(ref_audio, 7, 75)
+        start, end = find_active_portion(ref_audio, segment_duration, 75)
         ref[ref_key] = segment(ref_audio, start, end)
 
         # Reference non-target stems
@@ -253,3 +256,9 @@ def write_wav(sig, filename, target_loudness=-23):
     # If you need 32-bit wavs, use
     sig = sig.astype('float32')
     sig.write(filename)
+
+
+def combine_anchors(distortion, artefact):
+    gain = utilities.conversion.db_to_amp(
+        distortion.loudness - artefact.loudness)
+    return 0.7 * distortion + 0.3 * gain * artefact

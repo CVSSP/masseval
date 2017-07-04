@@ -106,7 +106,6 @@ def mushra_mixture_from_track_sample(sample,
         tree = etree.ElementTree(waet)
         filename = os.path.join(directory,
                                 config.mushra_testname + '_' + question_id + '.xml')
-        print(filename)
         tree.write(filename,
                    pretty_print=True,
                    xml_declaration=True,

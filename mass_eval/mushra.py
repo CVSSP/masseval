@@ -46,7 +46,6 @@ def mushra_mixture_from_track_sample(sample,
         interface = etree.SubElement(setup, 'interface')
         for entry in mushra.interface:
             iface_option = etree.SubElement(interface, 'interfaceoption')
-            #iface_options = options.items()
             for option in sorted(entry):
                 iface_option.set(option, entry[option])
         #   </interface>
@@ -78,10 +77,10 @@ def mushra_mixture_from_track_sample(sample,
                     question['title']
                 #       <scales>
                 scales = etree.SubElement(page_interface, 'scales')
-                for number, label in question['scale'].items():
+                for label in sorted(question['scale']):
                     scale = etree.SubElement(scales, 'scalelabel')
                     scale.text = label
-                    scale.set('position', number)
+                    scale.set('position', question['scale'][label])
                 #       </scales>
                 #   </interface>
 

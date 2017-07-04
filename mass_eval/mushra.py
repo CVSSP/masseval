@@ -76,8 +76,8 @@ def mushra_mixture_from_track_sample(sample,
                 scales = etree.SubElement(page_interface, 'scales')
                 for label in sorted(question['scale']):
                     scale = etree.SubElement(scales, 'scalelabel')
-                    scale.text = label
-                    scale.set('position', question['scale'][label])
+                    scale.text = question['scale'][label]
+                    scale.set('position', label)
                 #       </scales>
                 #   </interface>
 

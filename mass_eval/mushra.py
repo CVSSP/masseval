@@ -53,8 +53,8 @@ def mushra_mixing_config():
                             'the vocals and remaining parts of the song '
                             'between the reference and the test sounds.'),
             'scale': {
-                '0':   'No difference',
-                '100': 'Strong difference',
+                '0':   'Same balance',
+                '100': 'Different balance',
             },
         },
         'quality':  {
@@ -65,8 +65,8 @@ def mushra_mixing_config():
                             'but no changes in level balance between the ',
                             'different parts of the song.'),
             'scale': {
-                '0':   'No difference',
-                '100': 'Strong difference',
+                '0':   'Same quality',
+                '100': 'Worse quality',
             },
         },
     }

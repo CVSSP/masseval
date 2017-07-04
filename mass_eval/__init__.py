@@ -4,6 +4,6 @@
 __version__ = '0.1'
 
 from . import audio
-from . import dataframes
+from . import data
 from . import anchor
 from . import mushra

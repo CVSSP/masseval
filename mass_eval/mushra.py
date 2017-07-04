@@ -201,13 +201,16 @@ if __name__ == '__main__':
     import pandas as pd
     import numpy as np
 
-    df = mass_eval.data_management.get_sisec_df()
+    mass_eval.config.mus_base_path = '/vol/vssp/maruss/data2/MUS2017'
+    mass_eval.config.dsd_base_path = '/vol/vssp/datasets/audio/DSD100'
+
+    df = mass_eval.data.get_sisec_df()
 
     exclude_tracks = []
     mix_sample = pd.DataFrame()
     for metric in ['SDR', 'SAR', 'SIR']:
 
-        sample = mass_eval.sample.stimuli.get_sample(
+        sample = mass_eval.data.get_sample(
                 df,
                 num_tracks=2,
                 num_algos=4,

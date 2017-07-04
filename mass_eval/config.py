@@ -21,11 +21,11 @@ audio_encoding = 'float32'
 # WebAudioEvalutionTool [1].
 # 
 # [1] https://github.com/BrechtDeMan/WebAudioEvaluationTool
-mushra = namedtuple('mushra', [])
+#
 # Name of listening test. The generated config files will be named:
 # ${testname}_${question_id}.xml
-mushra.testname = 'remix'
-mushra.metric = [
+mushra_testname = 'remix'
+mushra_metric = [
     'testTimer',
     'elementTimer',
     'elementInitialPosition',
@@ -34,7 +34,7 @@ mushra.metric = [
     'elementFlagMoved',
     'elementListenTracker',
 ]
-mushra.interface = [
+mushra_interface = [
     {'type': 'check', 'name': 'fragmentMoved'},
     {'type': 'check', 'name': 'scalerange', 'min': '25', 'max': '75'},
     {'type': 'show', 'name': 'fragmentSort'},
@@ -42,7 +42,7 @@ mushra.interface = [
     {'type': 'show', 'name': 'page-count'},
     {'type': 'show', 'name': 'volume'},
 ]
-mushra.page = {
+mushra_page = {
     'randomiseOrder': 'true',
     'synchronous': 'true',
     'repeatCount': '0',
@@ -50,7 +50,7 @@ mushra.page = {
     'loudness': '-23',
     'restrictMovement': 'true',
 }
-mushra.questions = {
+mushra_questions = {
     'part1':    {
         'title': 'Title of the first test',
         'description': ('Pop-up description of what to do in the first '
@@ -70,4 +70,4 @@ mushra.questions = {
         },
     },
 }
-mushra.exit_message = 'Thank you for participating in this listening test!'
+mushra_exit_message = 'Thank you for participating in this listening test!'

@@ -4,9 +4,6 @@ from lxml import etree
 from . import config
 
 
-mushra = config.mushra
-
-
 def mushra_mixture_from_track_sample(sample,
                                      directory,
                                      target_loudness=-23,
@@ -18,7 +15,7 @@ def mushra_mixture_from_track_sample(sample,
         os.makedirs(directory)
 
     # Create different configuration files for every question
-    for question_id, question in mushra.questions.items():
+    for question_id, question in config.mushra_questions.items():
 
         # Start config file for the MUSHRA test
         xsi_namespace = 'http://www.w3.org/2001/XMLSchema-instance'
@@ -36,15 +33,15 @@ def mushra_mixture_from_track_sample(sample,
                                  crossFade='0.01',
                                  loudness='-23')
         #   <exitText/>
-        etree.SubElement(setup, 'exitText').text = mushra.exit_message
+        etree.SubElement(setup, 'exitText').text = config.mushra_exit_message
         #   <metric>
         metric = etree.SubElement(setup, 'metric')
-        for value in mushra.metric:
+        for value in config.mushra_metric:
             etree.SubElement(metric, 'metricenable').text = value
         #   </metric>
         #   <interface>
         interface = etree.SubElement(setup, 'interface')
-        for entry in mushra.interface:
+        for entry in config.mushra_interface:
             iface_option = etree.SubElement(interface, 'interfaceoption')
             for option in sorted(entry):
                 iface_option.set(option, entry[option])
@@ -67,8 +64,8 @@ def mushra_mixture_from_track_sample(sample,
                     '_' + str(level) + 'dB'
                 page.set('id', page_id)
                 page.set('hostURL', 'stim/' + folder + '/')
-                for option in sorted(mushra.page):
-                    page.set(option, mushra.page[option])
+                for option in sorted(config.mushra_page):
+                    page.set(option, config.mushra_page[option])
 
                 #   <interface>
                 page_interface = etree.SubElement(page, 'interface')
@@ -108,7 +105,8 @@ def mushra_mixture_from_track_sample(sample,
 
         tree = etree.ElementTree(waet)
         filename = os.path.join(directory,
-                                mushra.testname + '_' + question_id + '.xml')
+                                config.mushra_testname + '_' + question_id + '.xml')
+        print(filename)
         tree.write(filename,
                    pretty_print=True,
                    xml_declaration=True,

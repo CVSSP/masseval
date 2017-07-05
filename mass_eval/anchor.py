@@ -236,6 +236,8 @@ class RemixAnchor():
         # We need a single background
         if isinstance(others, list):
             self.background = sum(other for other in others)
+        else:
+            self.background = others
 
         self.target = target
         self.mix = self.target + self.background

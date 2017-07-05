@@ -1,5 +1,4 @@
 import pkg_resources
-from collections import namedtuple
 
 dsd_yaml = pkg_resources.resource_filename('mass_eval',
                                            'data/DSD100.yaml')
@@ -15,11 +14,11 @@ audio_encoding = 'float32'
 
 
 # Configuration of the MUSHRA mixing listening test.
-# 
+#
 # For every question defined in the config section a single xml file will be
 # generated containing the configuration in a format suitable for the
 # WebAudioEvalutionTool [1].
-# 
+#
 # [1] https://github.com/BrechtDeMan/WebAudioEvaluationTool
 #
 # Name of listening test. The generated config files will be named:

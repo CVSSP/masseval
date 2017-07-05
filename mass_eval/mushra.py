@@ -1,78 +1,7 @@
 import os
 from lxml import etree
-from collections import namedtuple
 
-
-def mushra_mixing_config():
-    '''
-    Configuration of the MUSHRA mixing listening test.
-
-    For every question defined in the config section a single xml file will be
-    generated containing the configuration in a format suitable for the
-    WebAudioEvalutionTool [1].
-
-    [1] https://github.com/BrechtDeMan/WebAudioEvaluationTool
-    '''
-
-    config = namedtuple('config', [])
-
-    # Name of listening test. The generated config files will be named:
-    # ${testname}_${question_id}.xml
-    config.testname = 'remix'
-
-    config.metric = [
-        'testTimer',
-        'elementTimer',
-        'elementInitialPosition',
-        'elementTracker',
-        'elementFlagListenedTo',
-        'elementFlagMoved',
-        'elementListenTracker',
-    ]
-    config.interface = [
-        {'type': 'check', 'name': 'fragmentMoved'},
-        # {'type': 'check', 'name': 'scalerange', 'min': '25', 'max': '75'},
-        {'type': 'show', 'name': 'fragmentSort'},
-        {'type': 'show', 'name': 'playhead'},
-        {'type': 'show', 'name': 'page-count'},
-        # {'type': 'show', 'name': 'volume'},
-    ]
-    config.page = {
-        'randomiseOrder': 'true',
-        'synchronous': 'true',
-        'repeatCount': '0',
-        'loop': 'true',
-        'loudness': '-23',
-        # 'restrictMovement': 'true',
-    }
-    config.questions = {
-        # 'id': ['MUSHRA title', 'Popup description']
-        'level':    {
-            'title': 'Rate the level balance compared to the reference',
-            'description': ('Rate the preservation of the level balance of '
-                            'the vocals and remaining parts of the song '
-                            'between the reference and the test sounds.'),
-            'scale': {
-                '0':   'No difference',
-                '100': 'Strong difference',
-            },
-        },
-        'quality':  {
-            'title': 'Rate the sound quality compared to the reference',
-            'description': ('Rate the sound quality of the test sounds ',
-                            'compared to the test sounds. Please consider ',
-                            'only all kind of artefacts and distortions, '
-                            'but no changes in level balance between the ',
-                            'different parts of the song.'),
-            'scale': {
-                '0':   'No difference',
-                '100': 'Strong difference',
-            },
-        },
-    }
-    config.exit_message = 'Thank you for participating in this listening test!'
-
-    return config
+from . import config
 
 
 def mushra_mixture_from_track_sample(sample,
@@ -80,15 +9,13 @@ def mushra_mixture_from_track_sample(sample,
                                      target_loudness=-23,
                                      mixing_levels=[0, 6, 12]):
 
-    config = mushra_mixing_config()
-
     sample = sample[sample['method'] != 'Ref']
 
     if not os.path.exists(directory):
         os.makedirs(directory)
 
     # Create different configuration files for every question
-    for question_id, question in config.questions.items():
+    for question_id, question in config.mushra_questions.items():
 
         # Start config file for the MUSHRA test
         xsi_namespace = 'http://www.w3.org/2001/XMLSchema-instance'
@@ -106,18 +33,18 @@ def mushra_mixture_from_track_sample(sample,
                                  crossFade='0.01',
                                  loudness='-23')
         #   <exitText/>
-        etree.SubElement(setup, 'exitText').text = config.exit_message
+        etree.SubElement(setup, 'exitText').text = config.mushra_exit_message
         #   <metric>
         metric = etree.SubElement(setup, 'metric')
-        for value in config.metric:
+        for value in config.mushra_metric:
             etree.SubElement(metric, 'metricenable').text = value
         #   </metric>
         #   <interface>
         interface = etree.SubElement(setup, 'interface')
-        for options in config.interface:
+        for entry in config.mushra_interface:
             iface_option = etree.SubElement(interface, 'interfaceoption')
-            for option, value in options.items():
-                iface_option.set(option, value)
+            for option in sorted(entry):
+                iface_option.set(option, entry[option])
         #   </interface>
         # </setup>
 
@@ -137,8 +64,8 @@ def mushra_mixture_from_track_sample(sample,
                     '_' + str(level) + 'dB'
                 page.set('id', page_id)
                 page.set('hostURL', 'stim/' + folder + '/')
-                for option, value in config.page.items():
-                    page.set(option, value)
+                for option in sorted(config.mushra_page):
+                    page.set(option, config.mushra_page[option])
 
                 #   <interface>
                 page_interface = etree.SubElement(page, 'interface')
@@ -147,10 +74,10 @@ def mushra_mixture_from_track_sample(sample,
                     question['title']
                 #       <scales>
                 scales = etree.SubElement(page_interface, 'scales')
-                for number, label in question['scale'].items():
+                for label in sorted(question['scale']):
                     scale = etree.SubElement(scales, 'scalelabel')
-                    scale.text = label
-                    scale.set('position', number)
+                    scale.text = question['scale'][label]
+                    scale.set('position', label)
                 #       </scales>
                 #   </interface>
 
@@ -178,7 +105,7 @@ def mushra_mixture_from_track_sample(sample,
 
         tree = etree.ElementTree(waet)
         filename = os.path.join(directory,
-                                config.testname + '_' + question_id + '.xml')
+                                config.mushra_testname + '_' + question_id + '.xml')
         tree.write(filename,
                    pretty_print=True,
                    xml_declaration=True,

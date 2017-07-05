@@ -35,6 +35,17 @@ class Anchor:
                  trim_factor_distorted=0.2,
                  trim_factor_artefacts=0.99,
                  ):
+        '''
+        target:
+            The target audio, e.g. vocals
+        others:
+            Can be a list of everthing else, or just the accompaniment (Wave).
+        trim_factor_distorted:
+            Proportion of spectral frames to remove randomly in time.
+        trim_factor_artefacts:
+            Proportion of time-frequency bins to randomly remove.
+        '''
+
 
         from scipy import signal
 

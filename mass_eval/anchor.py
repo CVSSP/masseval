@@ -29,7 +29,13 @@ class Anchor:
         http://doi.org/10.1109/EUSIPCO.2016.7760550
     '''
 
-    def __init__(self, target, others):
+    def __init__(self,
+                 target,
+                 others,
+                 trim_factor_distorted=0.2,
+                 trim_factor_artefacts=0.99,
+                 ):
+
         from scipy import signal
 
         self.target = target
@@ -43,8 +49,8 @@ class Anchor:
         self.cut_off = utilities.conversion.nearest_bin(3500,
                                                         points,
                                                         target.sample_rate)
-        self.trim_factor_distorted = 0.2
-        self.trim_factor_artefacts = 0.99
+        self.trim_factor_distorted = trim_factor_distorted
+        self.trim_factor_artefacts = trim_factor_artefacts
 
     def distortion(self):
         '''
@@ -196,6 +202,8 @@ class RemixAnchor():
     def __init__(self,
                  target,
                  others,
+                 trim_factor_distorted=0.2,
+                 trim_factor_artefacts=0.99,
                  target_level_offset=-14,
                  quality_anchor_loudness_balance=[0, 0]):
         '''
@@ -203,6 +211,10 @@ class RemixAnchor():
             The target audio, e.g. vocals
         others:
             Can be a list of everthing else, or just the accompaniment (Wave).
+        trim_factor_distorted:
+            Proportion of spectral frames to remove randomly in time.
+        trim_factor_artefacts:
+            Proportion of time-frequency bins to randomly remove.
         target_level_offset:
             The level adjustment applied to the target for the balance anchor.
         quality_anchor_loudness_balance:
@@ -218,7 +230,10 @@ class RemixAnchor():
         self.target = target
         self.mix = self.target + self.background
 
-        self.anchor_gen = Anchor(self.mix, None)
+        self.anchor_gen = Anchor(self.mix,
+                                 None,
+                                 trim_factor_distorted,
+                                 trim_factor_artefacts)
 
         self.target_level_offset = target_level_offset
 

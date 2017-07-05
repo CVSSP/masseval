@@ -46,7 +46,6 @@ class Anchor:
             Proportion of time-frequency bins to randomly remove.
         '''
 
-
         from scipy import signal
 
         self.target = target

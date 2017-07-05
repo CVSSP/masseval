@@ -103,20 +103,7 @@ def write_mixtures_from_sample(sample,
             force_mono,
             start,
             end)
-
         accomp_audio = sum(other for name, other in others.items())
-
-        # Get target anchor
-        anchors = anchor.Anchor(target_audio, list(others.values()))
-        distortion = anchors.distortion()
-        artefacts = anchors.artefacts()
-        target_anchor = combine_anchors(distortion, artefacts)
-
-        # Get accompaniment anchor
-        anchors = anchor.Anchor(accomp_audio, list(others.values()))
-        distortion = anchors.distortion()
-        artefacts = anchors.artefacts()
-        accomp_anchor = combine_anchors(distortion, artefacts)
 
         # Reference and anchor mixes
         for level in mixing_levels:
@@ -127,18 +114,25 @@ def write_mixtures_from_sample(sample,
             write_wav(mix, os.path.join(full_path, name + '.wav'),
                       target_loudness)
 
-            name = 'anchor_quality_mix_{}dB'.format(level)
-            mix = (utilities.conversion.db_to_amp(level) *
-                   (0.8 * target_anchor + 0.2 * target_audio) +
-                   (0.8 * accomp_anchor + 0.2 * accomp_audio))
-            write_wav(mix, os.path.join(full_path, name + '.wav'),
-                      target_loudness)
-
-            name = 'anchor_level_mix_{}dB'.format(level)
-            mix = (utilities.conversion.db_to_amp(level - 14) *
-                   target_audio + accomp_audio)
-            write_wav(mix, os.path.join(full_path, name + '.wav'),
-                      target_loudness)
+            creator = anchor.RemixAnchor(
+                    utilities.conversion.db_to_amp(level) * target_audio,
+                    accomp_audio,
+                    trim_factor_distorted=0.1,
+                    trim_factor_artefacts=0.99,
+                    target_level_offset=-14,
+                    quality_anchor_loudness_balance=[9, 0])
+            anchors = creator.create()
+            for anchor_type in anchors._fields:
+                if anchor_type == 'Interferer':
+                    name = 'anchor_level_mix_{}dB'.format(level)
+                elif anchor_type == 'Quality':
+                    name = 'anchor_quality_mix_{}dB'.format(level)
+                else:
+                    continue
+                wav = getattr(anchors, anchor_type)
+                write_wav(wav,
+                          os.path.join(full_path, name + '.wav'),
+                          target_loudness)
 
         # Mixes per method
         not_ref_sample = g_sample[g_sample.method != 'Ref']

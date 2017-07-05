@@ -34,6 +34,14 @@ def mushra_mixture_from_track_sample(sample,
                                  loudness='-23')
         #   <exitText/>
         etree.SubElement(setup, 'exitText').text = config.mushra_exit_message
+        #   <survey>
+        survey = etree.SubElement(setup, 'survey', location='before')
+        surveyentry = etree.SubElement(survey, 'surveyentry',
+                                       type='statement',
+                                       id='test-intro')
+        etree.SubElement(surveyentry, 'statement').text = (
+                question['description'])
+        #   </survey>
         #   <metric>
         metric = etree.SubElement(setup, 'metric')
         for value in config.mushra_metric:

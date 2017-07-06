@@ -1,0 +1,57 @@
+# For every question defined in the config section a single xml file will be
+# generated containing the configuration in a format suitable for the
+# WebAudioEvalutionTool [1].
+#
+# [1] https://github.com/BrechtDeMan/WebAudioEvaluationTool
+#
+# Name of listening test. The generated config files will be named:
+# ${testname}_${question_id}.xml
+testname: 'remix'
+metric:
+    - 'testTimer'
+    - 'elementTimer'
+    - 'elementInitialPosition'
+    - 'elementTracker'
+    - 'elementFlagListenedTo'
+    - 'elementFlagMoved'
+    - 'elementListenTracker'
+interface:
+    - type: 'check'
+      name: 'fragmentMoved'
+    - type: 'check'
+      name: 'scalerange'
+      min : '25'
+      max : '75'
+    - type: 'show'
+      name: 'fragmentSort'
+    - type: 'show'
+      name: 'playhead'
+    - type: 'show'
+      name: 'page-count'
+    - type: 'show'
+      name: 'volume'
+page:
+    randomiseOrder  : 'true'
+    synchronous     : 'true'
+    repeatCount     : '0'
+    loop            : 'true'
+    loudness        : '-23'
+    restrictMovement: 'true'
+questions:
+    part1:
+        title: 'Title of the first test'
+        description: >
+            'Pop-up description of what to do in the first
+            test.'
+        scale:
+            0:   'The same'
+            100: 'Extremly different'
+    part2:
+        title: 'Title of the second test'
+        description: >
+            'Pop-up description of what to do in the second
+            test.'
+        scale:
+            0:   'Same quality'
+            100: 'Worse quality'
+exit_message: 'Thank you for participating in this listening test!'

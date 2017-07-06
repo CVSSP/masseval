@@ -16,20 +16,12 @@ metric:
     - 'elementFlagMoved'
     - 'elementListenTracker'
 interface:
-    - type: 'check'
-      name: 'fragmentMoved'
-    - type: 'check'
-      name: 'scalerange'
-      min : '25'
-      max : '75'
-    - type: 'show'
-      name: 'fragmentSort'
-    - type: 'show'
-      name: 'playhead'
-    - type: 'show'
-      name: 'page-count'
-    - type: 'show'
-      name: 'volume'
+    - {type: 'check', name: 'fragmentMoved'}
+    - {type: 'check', name: 'scalerange', min : '25', max : '75'}
+    - {type: 'show',  name: 'fragmentSort'}
+    - {type: 'show',  name: 'playhead'}
+    - {type: 'show',  name: 'page-count'}
+    - {type: 'show',  name: 'volume'}
 page:
     randomiseOrder  : 'true'
     synchronous     : 'true'

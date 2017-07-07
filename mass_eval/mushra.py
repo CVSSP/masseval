@@ -6,10 +6,10 @@ from lxml import etree
 from . import config
 
 
-def mushra_mixture_from_track_sample(sample,
-                                     directory,
-                                     target_loudness=-23,
-                                     mixing_levels=[0, 6, 12]):
+def mixture_from_track_sample(sample,
+                              directory,
+                              target_loudness=-23,
+                              mixing_levels=[0, 6, 12]):
 
     with open(config.mushra_config_file, 'r') as ymlfile:
         mushra_config = yaml.load(ymlfile)

@@ -28,7 +28,7 @@ if __name__ == '__main__':
         exclude_tracks = np.append(exclude_tracks, np.unique(tracks))
         mix_sample = pd.concat([mix_sample, sample])
 
-    mass_eval.mushra.mushra_mixture_from_track_sample(mix_sample,
-                                                      '.',
-                                                      target_loudness=-26,
-                                                      mixing_levels=[0, 6, 12])
+    mass_eval.mushra.mixture_from_track_sample(mix_sample,
+                                               '.',
+                                               target_loudness=-26,
+                                               mixing_levels=[0, 6, 12])

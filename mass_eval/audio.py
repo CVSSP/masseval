@@ -117,10 +117,10 @@ def write_mixtures_from_sample(sample,
             creator = anchor.RemixAnchor(
                     utilities.conversion.db_to_amp(level) * target_audio,
                     accomp_audio,
-                    trim_factor_distorted=0.1,
+                    trim_factor_distorted=0.2,
                     trim_factor_artefacts=0.99,
                     target_level_offset=-14,
-                    quality_anchor_loudness_balance=[9, 0])
+                    quality_anchor_loudness_balance=[14, 0])
             anchors = creator.create()
             for anchor_type in anchors._fields:
                 if anchor_type == 'Interferer':

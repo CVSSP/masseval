@@ -7,6 +7,7 @@
 # Name of listening test. The generated config files will be named:
 # ${testname}_${question_id}.xml
 testname: 'remix'
+
 metric:
     - 'testTimer'
     - 'elementTimer'
@@ -15,13 +16,28 @@ metric:
     - 'elementFlagListenedTo'
     - 'elementFlagMoved'
     - 'elementListenTracker'
+
 interface:
-    - {type: 'check', name: 'fragmentMoved'}
-    - {type: 'check', name: 'scalerange', min : '25', max : '75'}
-    - {type: 'show',  name: 'fragmentSort'}
-    - {type: 'show',  name: 'playhead'}
-    - {type: 'show',  name: 'page-count'}
-    - {type: 'show',  name: 'volume'}
+    - type: 'check'
+      name: 'fragmentMoved'
+
+    - type: 'check'
+      name: 'scalerange'
+      min : '25'
+      max : '75'
+
+    - type: 'show'
+      name: 'fragmentSort'
+
+    - type: 'show'
+      name: 'playhead'
+
+    - type: 'show'
+      name: 'page-count'
+
+    - type: 'show'
+      name: 'volume'
+
 page:
     randomiseOrder  : 'true'
     synchronous     : 'true'
@@ -29,21 +45,20 @@ page:
     loop            : 'true'
     loudness        : '-23'
     restrictMovement: 'true'
+
 questions:
-    part1:
-        title: 'Title of the first test'
-        description: >
-            'Pop-up description of what to do in the first
-            test.'
-        scale:
-            0:   'The same'
-            100: 'Extremly different'
-    part2:
-        title: 'Title of the second test'
-        description: >
-            'Pop-up description of what to do in the second
-            test.'
-        scale:
-            0:   'Same quality'
-            100: 'Worse quality'
+    - title: 'Title of the first test'
+      description: >
+          'Pop-up description of what to do in the first test.'
+      scale:
+          0:   'The same'
+          100: 'Extremly different'
+          
+    - title: 'Title of the second test'
+      description: > 
+          'Pop-up description of what to do in the second test.'
+      scale:
+          0:   'Same quality'
+          100: 'Worse quality'
+
 exit_message: 'Thank you for participating in this listening test!'

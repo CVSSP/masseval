@@ -4,8 +4,8 @@ if __name__ == '__main__':
     import pandas as pd
     import numpy as np
 
-    mass_eval.config.mus_base_path = '~/data/MUS2017'
-    mass_eval.config.dsd_base_path = '~/data/DSD100'
+    mass_eval.config.mus_base_path = '/vol/vssp/maruss/data2/MUS2017'
+    mass_eval.config.dsd_base_path = '/vol/vssp/datasets/audio/DSD100'
     mass_eval.config.mushra_config_file = './mushra.yaml'
 
     df = mass_eval.data.get_sisec_df()

@@ -1,10 +1,6 @@
 from collections import namedtuple
-
 import numpy as np
-
 from untwist import (utilities, transforms)
-
-from . import audio
 
 
 Anchors = namedtuple('Anchors', ['Distortion',
@@ -39,6 +35,7 @@ class Anchor:
                  trim_factor_distorted=0.2,
                  trim_factor_artefacts=0.99,
                  low_pass_artefacts=False,
+                 low_pass_cutoff=3500,
                  ):
         '''
         target:
@@ -61,7 +58,7 @@ class Anchor:
         self.stft = transforms.STFT(window, points, points // 2)
         self.istft = transforms.ISTFT(window, points, points // 2)
 
-        self.cut_off = utilities.conversion.nearest_bin(3500,
+        self.cut_off = utilities.conversion.nearest_bin(low_pass_cutoff,
                                                         points,
                                                         target.sample_rate)
         self.trim_factor_distorted = trim_factor_distorted
@@ -224,7 +221,8 @@ class RemixAnchor():
                  trim_factor_distorted=0.2,
                  trim_factor_artefacts=0.99,
                  target_level_offset=-14,
-                 quality_anchor_loudness_balance=[0, 0]):
+                 quality_anchor_loudness_balance=[0, 0],
+                 low_pass_cutoff=3500):
         '''
         target:
             The target audio, e.g. vocals
@@ -255,7 +253,8 @@ class RemixAnchor():
                                  None,
                                  trim_factor_distorted,
                                  trim_factor_artefacts,
-                                 low_pass_artefacts=True)
+                                 low_pass_artefacts=True,
+                                 low_pass_cutoff=low_pass_cutoff)
 
         self.target_level_offset = target_level_offset
 

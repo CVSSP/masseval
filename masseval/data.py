@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sb
 
-import mass_datasets
+import massdatasets
 
 from . import config
 

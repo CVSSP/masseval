@@ -1,4 +1,4 @@
-!!python/object:mass_datasets.DSD100
+!!python/object:massdatasets.DSD100
 base_path:
 dataset: DSD100
 songs:

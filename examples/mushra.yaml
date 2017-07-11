@@ -1,0 +1,70 @@
+# MUSHRA configuration for the WebAudioEvalutionTool.
+#
+# See https://github.com/BrechtDeMan/WebAudioEvaluationTool for further details.
+#
+# Together with the mushra.mixture_from_track_sample() function of mass_eval
+# this config will generate the xml configuration files you will need for the a
+# MUSHRA listening test generated with mass_eval.
+
+testname: 'remix'
+
+metric:
+    - 'testTimer'
+    - 'elementTimer'
+    - 'elementInitialPosition'
+    - 'elementTracker'
+    - 'elementFlagListenedTo'
+    - 'elementFlagMoved'
+    - 'elementListenTracker'
+
+interface:
+    - type: 'check'
+      name: 'fragmentMoved'
+
+    - type: 'check'
+      name: 'scalerange'
+      min : '25'
+      max : '75'
+
+    - type: 'show'
+      name: 'fragmentSort'
+
+    - type: 'show'
+      name: 'playhead'
+
+    - type: 'show'
+      name: 'page-count'
+
+    - type: 'show'
+      name: 'volume'
+
+page:
+    randomiseOrder  : 'true'
+    synchronous     : 'true'
+    repeatCount     : '0'
+    loop            : 'true'
+    loudness        : '-23'
+    restrictMovement: 'true'
+
+# Different listening test questions you want to ask.
+# For every question a file ${testname}_{question}.xml will be generated.
+# For the example in this file it would be remix_similarity.xml and
+# remix_quality.xml.
+questions:
+    quality:
+        title: 'Title of the first test'
+        description: >
+            'Pop-up description of what to do in the first test.'
+        scale:
+            0:   'The same'
+            100: 'Extremly different'
+          
+    similarity:
+        title: 'Title of the second test'
+        description: > 
+            'Pop-up description of what to do in the second test.'
+        scale:
+            0:   'Same quality'
+            100: 'Worse quality'
+
+exit_message: 'Thank you for participating in this listening test!'

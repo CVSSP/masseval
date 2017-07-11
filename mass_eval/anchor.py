@@ -254,7 +254,7 @@ class RemixAnchor():
         self.anchor_gen = Anchor(self.mix,
                                  None,
                                  trim_factor_distorted,
-                                 trim_factor_artefacts
+                                 trim_factor_artefacts,
                                  low_pass_artefacts=True)
 
         self.target_level_offset = target_level_offset

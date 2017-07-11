@@ -1,20 +1,20 @@
 if __name__ == '__main__':
 
-    import mass_eval
+    import masseval
     import pandas as pd
     import numpy as np
 
-    mass_eval.config.mus_base_path = '/vol/vssp/maruss/data2/MUS2017'
-    mass_eval.config.dsd_base_path = '/vol/vssp/datasets/audio/DSD100'
-    mass_eval.config.mushra_config_file = './mushra.yaml'
+    masseval.config.mus_base_path = '/vol/vssp/maruss/data2/MUS2017'
+    masseval.config.dsd_base_path = '/vol/vssp/datasets/audio/DSD100'
+    masseval.config.mushra_config_file = './mushra.yaml'
 
-    df = mass_eval.data.get_sisec_df()
+    df = masseval.data.get_sisec_df()
 
     exclude_tracks = []
     mix_sample = pd.DataFrame()
     for metric in ['SDR', 'SAR', 'SIR']:
 
-        sample = mass_eval.data.get_sample(
+        sample = masseval.data.get_sample(
                 df,
                 num_tracks=2,
                 num_algos=4,
@@ -28,7 +28,7 @@ if __name__ == '__main__':
         exclude_tracks = np.append(exclude_tracks, np.unique(tracks))
         mix_sample = pd.concat([mix_sample, sample])
 
-    mass_eval.mushra.mixture_from_track_sample(mix_sample,
-                                               '.',
-                                               target_loudness=-26,
-                                               mixing_levels=[0, 6, 12])
+    masseval.mushra.mixture_from_track_sample(mix_sample,
+                                              '.',
+                                              target_loudness=-26,
+                                              mixing_levels=[0, 6, 12])

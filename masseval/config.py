@@ -1,9 +1,9 @@
 import pkg_resources
 
-dsd_yaml = pkg_resources.resource_filename('mass_eval',
+dsd_yaml = pkg_resources.resource_filename('masseval',
                                            'data/DSD100.yaml')
 
-mus_csv = pkg_resources.resource_filename('mass_eval',
+mus_csv = pkg_resources.resource_filename('masseval',
                                           'data/sisec_mus_2017_full.csv')
 
 # User configurable:

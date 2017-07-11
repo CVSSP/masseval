@@ -80,7 +80,7 @@ def get_sisec_df():
 
 def get_dsd100_df(base_path=config.dsd_base_path):
 
-    ds = mass_datasets.Dataset.read(config.dsd_yaml)
+    ds = massdatasets.Dataset.read(config.dsd_yaml)
 
     ds.base_path = base_path
     frame = ds.to_pandas_df()

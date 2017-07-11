@@ -78,7 +78,10 @@ def get_sisec_df():
     return df
 
 
-def get_dsd100_df(base_path=config.dsd_base_path):
+def get_dsd100_df(base_path=None):
+
+    if not base_path:
+        base_path = config.dsd_base_path
 
     ds = massdatasets.Dataset.read(config.dsd_yaml)
 

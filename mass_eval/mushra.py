@@ -1,13 +1,18 @@
 import os
+
+import yaml
 from lxml import etree
 
 from . import config
 
 
-def mushra_mixture_from_track_sample(sample,
-                                     directory,
-                                     target_loudness=-23,
-                                     mixing_levels=[0, 6, 12]):
+def mixture_from_track_sample(sample,
+                              directory,
+                              target_loudness=-23,
+                              mixing_levels=[0, 6, 12]):
+
+    with open(config.mushra_config_file, 'r') as ymlfile:
+        mushra_config = yaml.load(ymlfile)
 
     sample = sample[sample['method'] != 'Ref']
 
@@ -15,7 +20,7 @@ def mushra_mixture_from_track_sample(sample,
         os.makedirs(directory)
 
     # Create different configuration files for every question
-    for question_id, question in config.mushra_questions.items():
+    for question_id, question in mushra_config['questions'].items():
 
         # Start config file for the MUSHRA test
         xsi_namespace = 'http://www.w3.org/2001/XMLSchema-instance'
@@ -33,15 +38,24 @@ def mushra_mixture_from_track_sample(sample,
                                  crossFade='0.01',
                                  loudness='-23')
         #   <exitText/>
-        etree.SubElement(setup, 'exitText').text = config.mushra_exit_message
+        etree.SubElement(setup, 'exitText').text = (
+                mushra_config['exit_message'])
+        #   <survey>
+        survey = etree.SubElement(setup, 'survey', location='before')
+        surveyentry = etree.SubElement(survey, 'surveyentry',
+                                       type='statement',
+                                       id='test-intro')
+        etree.SubElement(surveyentry, 'statement').text = (
+                question['description'])
+        #   </survey>
         #   <metric>
         metric = etree.SubElement(setup, 'metric')
-        for value in config.mushra_metric:
+        for value in mushra_config['metric']:
             etree.SubElement(metric, 'metricenable').text = value
         #   </metric>
         #   <interface>
         interface = etree.SubElement(setup, 'interface')
-        for entry in config.mushra_interface:
+        for entry in mushra_config['interface']:
             iface_option = etree.SubElement(interface, 'interfaceoption')
             for option in sorted(entry):
                 iface_option.set(option, entry[option])
@@ -64,8 +78,8 @@ def mushra_mixture_from_track_sample(sample,
                     '_' + str(level) + 'dB'
                 page.set('id', page_id)
                 page.set('hostURL', 'stim/' + folder + '/')
-                for option in sorted(config.mushra_page):
-                    page.set(option, config.mushra_page[option])
+                for option in sorted(mushra_config['page']):
+                    page.set(option, mushra_config['page'][option])
 
                 #   <interface>
                 page_interface = etree.SubElement(page, 'interface')
@@ -77,7 +91,7 @@ def mushra_mixture_from_track_sample(sample,
                 for label in sorted(question['scale']):
                     scale = etree.SubElement(scales, 'scalelabel')
                     scale.text = question['scale'][label]
-                    scale.set('position', label)
+                    scale.set('position', str(label))
                 #       </scales>
                 #   </interface>
 
@@ -104,8 +118,9 @@ def mushra_mixture_from_track_sample(sample,
                 # </waet>
 
         tree = etree.ElementTree(waet)
-        filename = os.path.join(directory,
-                                config.mushra_testname + '_' + question_id + '.xml')
+        filename = os.path.join(
+                directory,
+                mushra_config['testname'] + '_' + question_id + '.xml')
         tree.write(filename,
                    pretty_print=True,
                    xml_declaration=True,
@@ -120,38 +135,3 @@ def mushra_mixture_from_track_sample(sample,
 
         with open(filename, 'w') as file:
             file.write(filedata)
-
-
-if __name__ == '__main__':
-
-    import mass_eval
-    import pandas as pd
-    import numpy as np
-
-    mass_eval.config.mus_base_path = '/vol/vssp/maruss/data2/MUS2017'
-    mass_eval.config.dsd_base_path = '/vol/vssp/datasets/audio/DSD100'
-
-    df = mass_eval.data.get_sisec_df()
-
-    exclude_tracks = []
-    mix_sample = pd.DataFrame()
-    for metric in ['SDR', 'SAR', 'SIR']:
-
-        sample = mass_eval.data.get_sample(
-                df,
-                num_tracks=2,
-                num_algos=4,
-                metric=metric,
-                target='vocals',
-                only_these_algos=None,
-                exclude_tracks=exclude_tracks,
-                selection_plot=False)
-
-        tracks = sample['track_id'].values
-        exclude_tracks = np.append(exclude_tracks, np.unique(tracks))
-        mix_sample = pd.concat([mix_sample, sample])
-
-    mushra_mixture_from_track_sample(mix_sample,
-                                     '.',
-                                     target_loudness=-26,
-                                     mixing_levels=[0, 6, 12])

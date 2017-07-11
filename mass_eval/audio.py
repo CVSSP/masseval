@@ -1,7 +1,10 @@
 import os
-from untwist import (data, transforms, utilities)
+
 import pandas as pd
 import numpy as np
+
+from untwist import (data, transforms, utilities)
+
 from . import anchor
 
 
@@ -120,7 +123,7 @@ def write_mixtures_from_sample(sample,
                     trim_factor_distorted=0.2,
                     trim_factor_artefacts=0.99,
                     target_level_offset=-14,
-                    quality_anchor_loudness_balance=[14, 0])
+                    quality_anchor_loudness_balance=[0, 0])
             anchors = creator.create()
             for anchor_type in anchors._fields:
                 if anchor_type == 'Interferer':

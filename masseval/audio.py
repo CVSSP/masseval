@@ -127,7 +127,7 @@ def write_mixtures_from_sample(sample,
             anchors = creator.create()
             for anchor_type in anchors._fields:
                 if anchor_type == 'Interferer':
-                    name = 'anchor_level_mix_{}dB'.format(level)
+                    name = 'anchor_loudness_mix_{}dB'.format(level)
                 elif anchor_type == 'Quality':
                     name = 'anchor_quality_mix_{}dB'.format(level)
                 else:

@@ -68,7 +68,8 @@ def write_mixtures_from_sample(sample,
                                force_mono=True,
                                target_loudness=-23,
                                mixing_levels=[-12, -6, 0, 6, 12],
-                               segment_duration=7):
+                               segment_duration=7,
+                               save_sources=False):
 
     # Iterate over the tracks and write audio out:
     for idx, g_sample in sample.groupby('track_id'):
@@ -111,30 +112,59 @@ def write_mixtures_from_sample(sample,
         for level in mixing_levels:
 
             name = 'ref_mix_{}dB'.format(level)
-            mix = (utilities.conversion.db_to_amp(level) * target_audio +
-                   accomp_audio)
-            write_wav(mix, os.path.join(full_path, name + '.wav'),
-                      target_loudness)
+            new_target = utilities.conversion.db_to_amp(level) * target_audio
+            mix = new_target + accomp_audio
+            level_dif = write_wav(mix, os.path.join(full_path, name + '.wav'),
+                                  target_loudness)
+
+            if save_sources:
+
+                write_wav(
+                    new_target * utilities.conversion.db_to_amp(level_dif),
+                    os.path.join(full_path, name + '_target.wav'),
+                    None)
+
+                write_wav(
+                    accomp_audio * utilities.conversion.db_to_amp(level_dif),
+                    os.path.join(full_path, name + '_accomp.wav'),
+                    None)
 
             creator = anchor.RemixAnchor(
-                    utilities.conversion.db_to_amp(level) * target_audio,
+                    new_target,
                     accomp_audio,
                     trim_factor_distorted=0.2,
                     trim_factor_artefacts=0.99,
                     target_level_offset=-14,
                     quality_anchor_loudness_balance=[0, 0])
+
             anchors = creator.create()
+
             for anchor_type in anchors._fields:
+
                 if anchor_type == 'Interferer':
                     name = 'anchor_loudness_mix_{}dB'.format(level)
                 elif anchor_type == 'Quality':
                     name = 'anchor_quality_mix_{}dB'.format(level)
                 else:
                     continue
+
                 wav = getattr(anchors, anchor_type)
-                write_wav(wav,
-                          os.path.join(full_path, name + '.wav'),
-                          target_loudness)
+
+                dif = write_wav(wav,
+                                os.path.join(full_path, name + '.wav'),
+                                target_loudness)
+
+                if (anchor_type == 'Interferer') and save_sources:
+
+                    anchor_tgt, anchor_accomp = creator.interferer_anchor_both_sources()
+
+                    write_wav(anchor_tgt * utilities.conversion.db_to_amp(dif),
+                              os.path.join(full_path, name + '_target.wav'),
+                              None)
+
+                    write_wav(anchor_accomp * utilities.conversion.db_to_amp(dif),
+                              os.path.join(full_path, name + '_accomp.wav'),
+                              None)
 
         # Mixes per method
         not_ref_sample = g_sample[g_sample.method != 'Ref']
@@ -174,13 +204,27 @@ def write_mixtures_from_sample(sample,
 
             # Mixing
             for level in mixing_levels:
+
                 name = '{0}_mix_{1}dB'.format(method_name, level)
 
-                mix = (utilities.conversion.db_to_amp(level) * target_audio +
-                       accomp)
+                new_target = utilities.conversion.db_to_amp(level) * target_audio
+                mix = new_target + accomp
 
-                write_wav(mix, os.path.join(full_path, name + '.wav'),
-                          target_loudness)
+                level_dif = write_wav(mix,
+                                      os.path.join(full_path, name + '.wav'),
+                                      target_loudness)
+
+                if save_sources:
+
+                    write_wav(
+                        new_target * utilities.conversion.db_to_amp(level_dif),
+                        os.path.join(full_path, name + '_target.wav'),
+                        None)
+
+                    write_wav(
+                        accomp * utilities.conversion.db_to_amp(level_dif),
+                        os.path.join(full_path, name + '_accomp.wav'),
+                        None)
 
 
 def write_target_from_sample(sample,
@@ -247,11 +291,19 @@ def write_target_from_sample(sample,
                       target_loudness)
 
 
-def write_wav(sig, filename, target_loudness=-23):
-    sig.loudness = target_loudness
+def write_wav(sig, filename, target_loudness=None):
+
+    if target_loudness:
+        level_dif = target_loudness - sig.loudness
+        sig.loudness = target_loudness
+    else:
+        level_dif = 0
+
     # If you need 32-bit wavs, use
     sig = sig.astype('float32')
     sig.write(filename)
+
+    return level_dif
 
 
 def combine_anchors(distortion, artefact):

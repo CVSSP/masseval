@@ -1,10 +1,9 @@
+import collections
 import os
-
 import pandas as pd
 import numpy as np
-
+from mir_eval import separation
 from untwist import (data, transforms, utilities)
-
 from . import anchor
 
 
@@ -259,3 +258,50 @@ def combine_anchors(distortion, artefact):
     gain = utilities.conversion.db_to_amp(
         distortion.loudness - artefact.loudness)
     return 0.7 * distortion + 0.3 * gain * artefact
+
+
+def bss_eval(list_of_ref_waves, list_of_est_waves):
+    '''
+    This function computed the Bss Eval measures given the reference and
+    estimated sources, both of which should be mono untwist.data.audio.Wave
+    objects.
+
+    Returns:
+        BssEvalStats named tuple with the field names:
+            - sdr: Signal to Distortion Ratio
+            - sir: Signal to Interference Ratio
+            - sar: Signal to Artefacts Ratio
+            - perm: Best ordering of estimated sources in the mean SIR sense
+    '''
+
+    BssEvalStats = collections.namedtuple('BssEvalStats', 'sdr sir sar perm')
+
+    if isinstance(list_of_ref_waves, data.audio.Wave):
+        list_of_ref_waves = [list_of_ref_waves]
+    if isinstance(list_of_est_waves, data.audio.Wave):
+        list_of_est_waves = [list_of_est_waves]
+
+    list_of_ref_waves[0].check_mono()
+
+    min_length = np.min([_.num_frames for _ in list_of_ref_waves])
+    min_length = np.minimum(min_length,
+                            np.min([_.num_frames for _ in list_of_est_waves]))
+
+    num_sources = len(list_of_ref_waves)
+    ref_sources = np.zeros((num_sources, min_length))
+    est_sources = np.zeros((num_sources, min_length))
+
+    for i, ref in enumerate(list_of_ref_waves):
+        ref_sources[i] = np.array(ref[:, 0]).reshape(1, -1)
+
+    for i, est in enumerate(list_of_est_waves):
+        est_sources[i] = np.array(est[:, 0]).reshape(1, -1)
+
+    (sdr, sir, sar, perm) = separation.bss_eval_sources(ref_sources,
+                                                        est_sources,
+                                                        False)
+
+    return BssEvalStats(sdr=sdr,
+                        sir=sir,
+                        sar=sar,
+                        perm=perm)

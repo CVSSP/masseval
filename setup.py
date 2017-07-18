@@ -28,7 +28,8 @@ setup(
         'pandas',
         'numpy',
         'untwist >= 0.1.dev0',
-        'lxml'
+        'lxml',
+        'mir_eval',
     ],
     extras_require={
         'display': ['matplotlib>=1.5.0',

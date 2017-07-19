@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sb
+import os
 
 import massdatasets
 
@@ -251,3 +252,41 @@ def get_sample(df,
     sample = add_reference_to_sample(sample)
 
     return sample
+
+
+def add_mixture_paths_to_sample(sample,
+                                directory,
+                                mixing_levels,
+                                ):
+
+    anchor1 = sample[sample.method == 'Ref'].copy()
+    anchor1['method'] = 'AnchorQuality'
+    anchor2 = sample[sample.method == 'Ref'].copy()
+    anchor2['method'] = 'AnchorBalance'
+    sample = pd.concat([sample, anchor1, anchor2])
+
+    # Save file paths
+    frames = pd.DataFrame()
+    for idx, g_sample in sample.groupby('track_id'):
+
+        folder = '{0}-{1}-{2}'.format(
+            'mix',
+            g_sample.iloc[0]['track_id'],
+            g_sample.iloc[0]['metric'])
+
+        full_path = os.path.join(directory, folder)
+
+        for name, method in g_sample.groupby('method'):
+
+            # Setting on copy is fine here
+            for level in mixing_levels:
+
+                method['level'] = level
+                filename = '{0}/{1}_mix_{2}dB'.format(full_path, name, level)
+                method['stimulus_path'] = filename + '.wav'
+                method['target_path'] = filename + '_target.wav'
+                method['accomp_path'] = filename + '_accomp.wav'
+
+                frames = pd.concat([frames, method])
+
+    return frames

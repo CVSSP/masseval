@@ -111,7 +111,7 @@ def write_mixtures_from_sample(sample,
         # Reference and anchor mixes
         for level in mixing_levels:
 
-            name = 'ref_mix_{}dB'.format(level)
+            name = 'Ref_mix_{}dB'.format(level)
             new_target = utilities.conversion.db_to_amp(level) * target_audio
             mix = new_target + accomp_audio
             level_dif = write_wav(mix, os.path.join(full_path, name + '.wav'),
@@ -142,9 +142,9 @@ def write_mixtures_from_sample(sample,
             for anchor_type in anchors._fields:
 
                 if anchor_type == 'Interferer':
-                    name = 'anchor_loudness_mix_{}dB'.format(level)
+                    name = 'AnchorBalance_mix_{}dB'.format(level)
                 elif anchor_type == 'Quality':
-                    name = 'anchor_quality_mix_{}dB'.format(level)
+                    name = 'AnchorQuality_mix_{}dB'.format(level)
                 else:
                     continue
 

@@ -261,7 +261,6 @@ def remix_df_from_sample(sample,
                          ):
 
     sample = sample.loc[sample.target == target]
-    print(sample.head())
     sample_accomp = sample.copy()
     sample_accomp['target'] = 'accomp'
     sample_mixture = sample.copy()

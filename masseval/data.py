@@ -254,11 +254,21 @@ def get_sample(df,
     return sample
 
 
-def add_mixture_paths_to_sample(sample,
-                                directory,
-                                mixing_levels,
-                                ):
+def remix_df_from_sample(sample,
+                         directory,
+                         mixing_levels,
+                         target='vocals',
+                         ):
 
+    sample = sample.loc[sample.target == target]
+    print(sample.head())
+    sample_accomp = sample.copy()
+    sample_accomp['target'] = 'accomp'
+    sample_mixture = sample.copy()
+    sample_mixture['target'] = 'mixture'
+    sample = pd.concat([sample, sample_accomp, sample_mixture])
+
+    sample.loc[sample.method == 'Ref', 'filename'] = ''
     anchor1 = sample[sample.method == 'Ref'].copy()
     anchor1['method'] = 'AnchorQuality'
     anchor2 = sample[sample.method == 'Ref'].copy()
@@ -283,9 +293,13 @@ def add_mixture_paths_to_sample(sample,
 
                 method['level'] = level
                 filename = '{0}/{1}_mix_{2}dB'.format(full_path, name, level)
-                method['stimulus_path'] = filename + '.wav'
-                method['target_path'] = filename + '_target.wav'
-                method['accomp_path'] = filename + '_accomp.wav'
+
+                method.loc[method.target == target,
+                           'stimulus_path'] = filename + '_target.wav'
+                method.loc[method.target == 'accomp',
+                           'stimulus_path'] = filename + '_accomp.wav'
+                method.loc[method.target == 'mixture',
+                           'stimulus_path'] = filename + '.wav'
 
                 frames = pd.concat([frames, method])
 

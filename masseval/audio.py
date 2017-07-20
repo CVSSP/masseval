@@ -316,7 +316,7 @@ def bss_eval(list_of_ref_waves, list_of_est_waves):
     '''
     This function computed the Bss Eval measures given the reference and
     estimated sources, both of which should be mono untwist.data.audio.Wave
-    objects.
+    objects. I will trim the end of your audio if they are not equal in length.
 
     Returns:
         BssEvalStats named tuple with the field names:
@@ -344,10 +344,10 @@ def bss_eval(list_of_ref_waves, list_of_est_waves):
     est_sources = np.zeros((num_sources, min_length))
 
     for i, ref in enumerate(list_of_ref_waves):
-        ref_sources[i] = np.array(ref[:, 0]).reshape(1, -1)
+        ref_sources[i] = np.array(ref[:min_length, 0]).reshape(1, -1)
 
     for i, est in enumerate(list_of_est_waves):
-        est_sources[i] = np.array(est[:, 0]).reshape(1, -1)
+        est_sources[i] = np.array(est[:min_length, 0]).reshape(1, -1)
 
     (sdr, sir, sar, perm) = separation.bss_eval_sources(ref_sources,
                                                         est_sources,

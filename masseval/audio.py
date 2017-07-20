@@ -1,3 +1,4 @@
+from tempfile import TemporaryDirectory
 import collections
 import os
 import pandas as pd
@@ -5,6 +6,7 @@ import numpy as np
 from mir_eval import separation
 from untwist import (data, transforms, utilities)
 from . import anchor
+import matlab_wrapper
 
 
 def load_audio(df, force_mono=False, start=None, end=None):
@@ -312,11 +314,25 @@ def combine_anchors(distortion, artefact):
     return 0.7 * distortion + 0.3 * gain * artefact
 
 
+def make_waves_same_length(list_of_waves):
+
+    min_length = np.min([_.num_frames for _ in list_of_waves])
+    min_length = np.minimum(min_length,
+                            np.min([_.num_frames for _ in list_of_waves]))
+
+    for i, wave in enumerate(list_of_waves):
+        list_of_waves[i] = wave[:min_length]
+
+    return list_of_waves
+
+
 def bss_eval(list_of_ref_waves, list_of_est_waves):
     '''
     This function computed the Bss Eval measures given the reference and
     estimated sources, both of which should be mono untwist.data.audio.Wave
     objects. I will trim the end of your audio if they are not equal in length.
+
+    You must give me a list of waves or 1 wave per argument.
 
     Returns:
         BssEvalStats named tuple with the field names:
@@ -333,21 +349,18 @@ def bss_eval(list_of_ref_waves, list_of_est_waves):
     if isinstance(list_of_est_waves, data.audio.Wave):
         list_of_est_waves = [list_of_est_waves]
 
-    list_of_ref_waves[0].check_mono()
-
-    min_length = np.min([_.num_frames for _ in list_of_ref_waves])
-    min_length = np.minimum(min_length,
-                            np.min([_.num_frames for _ in list_of_est_waves]))
+    if not isinstance(list_of_ref_waves, list):
+        raise ValueError('I want a list of waves!')
 
     num_sources = len(list_of_ref_waves)
-    ref_sources = np.zeros((num_sources, min_length))
-    est_sources = np.zeros((num_sources, min_length))
+    if len(list_of_est_waves) != num_sources:
+        raise ValueError('The number of reference and estimates sources is not equal')
 
-    for i, ref in enumerate(list_of_ref_waves):
-        ref_sources[i] = np.array(ref[:min_length, 0]).reshape(1, -1)
+    list_of_ref_waves[0].check_mono()
 
-    for i, est in enumerate(list_of_est_waves):
-        est_sources[i] = np.array(est[:min_length, 0]).reshape(1, -1)
+    waves = make_waves_same_length(list_of_ref_waves + list_of_est_waves)
+    ref_sources = np.array([_[:, 0] for _ in waves[:num_sources]])
+    est_sources = np.array([_[:, 0] for _ in waves[num_sources:]])
 
     (sdr, sir, sar, perm) = separation.bss_eval_sources(ref_sources,
                                                         est_sources,
@@ -357,3 +370,94 @@ def bss_eval(list_of_ref_waves, list_of_est_waves):
                         sir=sir,
                         sar=sar,
                         perm=perm)
+
+
+def peass(list_of_ref_waves, list_of_est_waves, path_to_peass_toolbox):
+    '''
+    This function computed the Bss Eval measures given the reference and
+    estimated sources, both of which should be mono untwist.data.audio.Wave
+    objects. I will trim the end of your audio if they are not equal in length.
+
+    You must give me a list of waves or 1 wave per argument.
+
+    Returns:
+        BssEvalStats named tuple with the field names:
+            - sdr: Signal to Distortion Ratio
+            - sir: Signal to Interference Ratio
+            - sar: Signal to Artefacts Ratio
+            - perm: Best ordering of estimated sources in the mean SIR sense
+    '''
+
+    main_script = '''
+        options.segmentationFactor = 1;
+        res = PEASS_ObjectiveMeasure(originalFiles, estimateFile, options);
+        ops = res.OPS;
+        tps = res.TPS;
+        ips = res.IPS;
+        aps = res.APS;
+        '''
+
+    StatsPEASS = collections.namedtuple('StatsPEASS', ['ops',
+                                                       'tps',
+                                                       'ips',
+                                                       'aps',
+                                                       ]
+                                        )
+
+    # Initial setup for dealing with waves
+    if isinstance(list_of_ref_waves, data.audio.Wave):
+        list_of_ref_waves = [list_of_ref_waves]
+    if isinstance(list_of_est_waves, data.audio.Wave):
+        list_of_est_waves = [list_of_est_waves]
+
+    if not isinstance(list_of_ref_waves, list):
+        raise ValueError('I want a list of waves!')
+
+    num_sources = len(list_of_ref_waves)
+    if len(list_of_est_waves) != num_sources:
+        raise ValueError('The number of reference and estimates sources is not equal')
+
+    list_of_ref_waves[0].check_mono()
+
+    waves = make_waves_same_length(list_of_ref_waves + list_of_est_waves)
+    refs = waves[:num_sources]
+    ests = waves[num_sources:]
+
+    # Matlab side... (yak!)
+    matlab = matlab_wrapper.MatlabSession()
+    matlab.eval("addpath(genpath('{}'));".format(path_to_peass_toolbox))
+
+    with TemporaryDirectory() as tmp_dir:
+
+        # First we need to write the audio out
+
+        for i, wave in enumerate(refs):
+            name = '{}/{}.wav'.format(tmp_dir, i)
+            wave.write(name)
+            if i == 0:
+                cell = "{{'{0}'".format(name)
+            else:
+                cell = "{0};'{1}'".format(cell, name)
+        cell += '}'
+
+        matlab.eval('originalFiles = {};'.format(cell))
+        matlab.eval("options.destDir = '{}'".format(tmp_dir))
+
+        stats = []
+        # Now run PEASS on the estimated sources
+        for i, wave in enumerate(ests):
+            name = '{}/est.wav'.format(tmp_dir)
+            wave.write(name)
+
+            matlab.put('estimateFile', name)
+
+            matlab.eval(main_script)
+
+            stats.append(
+                StatsPEASS(ops=matlab.get('ops'),
+                           tps=matlab.get('tps'),
+                           ips=matlab.get('ips'),
+                           aps=matlab.get('aps'))
+            )
+
+    return stats

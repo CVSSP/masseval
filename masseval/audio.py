@@ -467,4 +467,7 @@ def peass(list_of_ref_waves, list_of_est_waves, path_to_peass_toolbox):
                            aps=matlab.get('aps'))
             )
 
-    return stats
+    if len(stats) == 1:
+        return stats[0]
+    else:
+        return stats

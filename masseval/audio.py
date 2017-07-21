@@ -390,7 +390,7 @@ def peass(list_of_ref_waves, list_of_est_waves, path_to_peass_toolbox):
 
     main_script = '''
         options.segmentationFactor = 1;
-        res = PEASS_ObjectiveMeasure(originalFiles, estimateFile, options);
+        res = PEASS_ObjectiveMeasure(refFiles, estimateFile, options);
         ops = res.OPS;
         tps = res.TPS;
         ips = res.IPS;
@@ -429,8 +429,7 @@ def peass(list_of_ref_waves, list_of_est_waves, path_to_peass_toolbox):
 
     with TemporaryDirectory() as tmp_dir:
 
-        # First we need to write the audio out
-
+        # First we need to write the reference source to disk
         for i, wave in enumerate(refs):
             name = '{}/{}.wav'.format(tmp_dir, i)
             wave.write(name)
@@ -443,9 +442,17 @@ def peass(list_of_ref_waves, list_of_est_waves, path_to_peass_toolbox):
         matlab.eval('originalFiles = {};'.format(cell))
         matlab.eval("options.destDir = '{}'".format(tmp_dir))
 
-        stats = []
         # Now run PEASS on the estimated sources
+        stats = []
         for i, wave in enumerate(ests):
+
+            organised_files = (
+                "refFiles = "
+                "originalFiles([{},"
+                "setdiff(1:length(originalFiles), {})]);").format(i+1, i+1)
+
+            matlab.eval(organised_files)
+
             name = '{}/est.wav'.format(tmp_dir)
             wave.write(name)
 

@@ -97,7 +97,7 @@ def add_reference_to_sample(sample):
     df = get_dsd100_df(config.dsd_base_path)
 
     ref = sample[sample.method == sample.iloc[0]['method']].copy()
-    ref['method'] = 'Ref'
+    ref['method'] = 'ref'
     ref = ref[ref.target != 'accompaniment']
     ref['score'] = np.nan
 
@@ -267,11 +267,11 @@ def remix_df_from_sample(sample,
     sample_mixture['target'] = 'mixture'
     sample = pd.concat([sample, sample_accomp, sample_mixture])
 
-    sample.loc[sample.method == 'Ref', 'filename'] = ''
-    anchor1 = sample[sample.method == 'Ref'].copy()
-    anchor1['method'] = 'AnchorQuality'
-    anchor2 = sample[sample.method == 'Ref'].copy()
-    anchor2['method'] = 'AnchorBalance'
+    sample.loc[sample.method == 'ref', 'filename'] = ''
+    anchor1 = sample[sample.method == 'ref'].copy()
+    anchor1['method'] = 'anchor_quality'
+    anchor2 = sample[sample.method == 'ref'].copy()
+    anchor2['method'] = 'anchor_loudness'
     sample = pd.concat([sample, anchor1, anchor2])
 
     # Save file paths

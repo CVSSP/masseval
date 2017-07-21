@@ -91,7 +91,7 @@ def write_mixtures_from_sample(sample,
         Reference audio
         '''
 
-        ref_sample = g_sample[g_sample.method == 'Ref']
+        ref_sample = g_sample[g_sample.method == 'ref']
 
         # Reference target
         ref = load_audio(ref_sample[ref_sample.target == target],
@@ -113,7 +113,7 @@ def write_mixtures_from_sample(sample,
         # Reference and anchor mixes
         for level in mixing_levels:
 
-            name = 'Ref_mix_{}dB'.format(level)
+            name = 'ref_mix_{}dB'.format(level)
             new_target = utilities.conversion.db_to_amp(level) * target_audio
             mix = new_target + accomp_audio
             level_dif = write_wav(mix, os.path.join(full_path, name + '.wav'),
@@ -144,9 +144,9 @@ def write_mixtures_from_sample(sample,
             for anchor_type in anchors._fields:
 
                 if anchor_type == 'Interferer':
-                    name = 'AnchorBalance_mix_{}dB'.format(level)
+                    name = 'anchor_loudness_mix_{}dB'.format(level)
                 elif anchor_type == 'Quality':
-                    name = 'AnchorQuality_mix_{}dB'.format(level)
+                    name = 'anchor_quality_mix_{}dB'.format(level)
                 else:
                     continue
 
@@ -169,7 +169,7 @@ def write_mixtures_from_sample(sample,
                               None)
 
         # Mixes per method
-        not_ref_sample = g_sample[g_sample.method != 'Ref']
+        not_ref_sample = g_sample[g_sample.method != 'ref']
         for method_name, method_sample in not_ref_sample.groupby('method'):
 
             # Get target and accompaniment
@@ -239,7 +239,7 @@ def write_target_from_sample(sample,
     # Iterate over the tracks and write audio out:
     for idx, g_sample in sample.groupby('track_id'):
 
-        ref_sample = g_sample[g_sample.method == 'Ref']
+        ref_sample = g_sample[g_sample.method == 'ref']
 
         # Reference target
         ref = load_audio(ref_sample[ref_sample.target == target],
@@ -257,7 +257,7 @@ def write_target_from_sample(sample,
                             end)
 
         # Load test items at the same point in time (same segment times)
-        test_items = load_audio(g_sample[(g_sample.method != 'Ref') &
+        test_items = load_audio(g_sample[(g_sample.method != 'ref') &
                                          (g_sample.target == target)],
                                 force_mono,
                                 start,

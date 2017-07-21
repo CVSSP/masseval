@@ -14,7 +14,7 @@ def mixture_from_track_sample(sample,
     with open(config.mushra_config_file, 'r') as ymlfile:
         mushra_config = yaml.load(ymlfile)
 
-    sample = sample[sample['method'] != 'Ref']
+    sample = sample[sample['method'] != 'ref']
 
     if not os.path.exists(directory):
         os.makedirs(directory)

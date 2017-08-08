@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sb
+import os
 
 import massdatasets
 
@@ -96,7 +97,7 @@ def add_reference_to_sample(sample):
     df = get_dsd100_df(config.dsd_base_path)
 
     ref = sample[sample.method == sample.iloc[0]['method']].copy()
-    ref['method'] = 'Ref'
+    ref['method'] = 'ref'
     ref = ref[ref.target != 'accompaniment']
     ref['score'] = np.nan
 
@@ -251,3 +252,54 @@ def get_sample(df,
     sample = add_reference_to_sample(sample)
 
     return sample
+
+
+def remix_df_from_sample(sample,
+                         directory,
+                         mixing_levels,
+                         target='vocals',
+                         ):
+
+    sample = sample.loc[sample.target == target]
+    sample_accomp = sample.copy()
+    sample_accomp['target'] = 'accomp'
+    sample_mixture = sample.copy()
+    sample_mixture['target'] = 'mixture'
+    sample = pd.concat([sample, sample_accomp, sample_mixture])
+
+    sample.loc[sample.method == 'ref', 'filename'] = ''
+    anchor1 = sample[sample.method == 'ref'].copy()
+    anchor1['method'] = 'anchor_quality'
+    anchor2 = sample[sample.method == 'ref'].copy()
+    anchor2['method'] = 'anchor_loudness'
+    sample = pd.concat([sample, anchor1, anchor2])
+
+    # Save file paths
+    frames = pd.DataFrame()
+    for idx, g_sample in sample.groupby('track_id'):
+
+        folder = '{0}-{1}-{2}'.format(
+            'mix',
+            g_sample.iloc[0]['track_id'],
+            g_sample.iloc[0]['metric'])
+
+        full_path = os.path.join(directory, folder)
+
+        for name, method in g_sample.groupby('method'):
+
+            # Setting on copy is fine here
+            for level in mixing_levels:
+
+                method['level'] = level
+                filename = '{0}/{1}_mix_{2}dB'.format(full_path, name, level)
+
+                method.loc[method.target == target,
+                           'stimulus_path'] = filename + '_target.wav'
+                method.loc[method.target == 'accomp',
+                           'stimulus_path'] = filename + '_accomp.wav'
+                method.loc[method.target == 'mixture',
+                           'stimulus_path'] = filename + '.wav'
+
+                frames = pd.concat([frames, method])
+
+    return frames

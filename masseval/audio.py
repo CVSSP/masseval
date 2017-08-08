@@ -1,3 +1,4 @@
+from tempfile import TemporaryDirectory
 import collections
 import os
 import pandas as pd
@@ -5,6 +6,7 @@ import numpy as np
 from mir_eval import separation
 from untwist import (data, transforms, utilities)
 from . import anchor
+import matlab_wrapper
 
 
 def load_audio(df, force_mono=False, start=None, end=None):
@@ -68,7 +70,8 @@ def write_mixtures_from_sample(sample,
                                force_mono=True,
                                target_loudness=-23,
                                mixing_levels=[-12, -6, 0, 6, 12],
-                               segment_duration=7):
+                               segment_duration=7,
+                               save_sources=False):
 
     # Iterate over the tracks and write audio out:
     for idx, g_sample in sample.groupby('track_id'):
@@ -88,7 +91,7 @@ def write_mixtures_from_sample(sample,
         Reference audio
         '''
 
-        ref_sample = g_sample[g_sample.method == 'Ref']
+        ref_sample = g_sample[g_sample.method == 'ref']
 
         # Reference target
         ref = load_audio(ref_sample[ref_sample.target == target],
@@ -111,33 +114,62 @@ def write_mixtures_from_sample(sample,
         for level in mixing_levels:
 
             name = 'ref_mix_{}dB'.format(level)
-            mix = (utilities.conversion.db_to_amp(level) * target_audio +
-                   accomp_audio)
-            write_wav(mix, os.path.join(full_path, name + '.wav'),
-                      target_loudness)
+            new_target = utilities.conversion.db_to_amp(level) * target_audio
+            mix = new_target + accomp_audio
+            level_dif = write_wav(mix, os.path.join(full_path, name + '.wav'),
+                                  target_loudness)
+
+            if save_sources:
+
+                write_wav(
+                    new_target * utilities.conversion.db_to_amp(level_dif),
+                    os.path.join(full_path, name + '_target.wav'),
+                    None)
+
+                write_wav(
+                    accomp_audio * utilities.conversion.db_to_amp(level_dif),
+                    os.path.join(full_path, name + '_accomp.wav'),
+                    None)
 
             creator = anchor.RemixAnchor(
-                    utilities.conversion.db_to_amp(level) * target_audio,
+                    new_target,
                     accomp_audio,
                     trim_factor_distorted=0.2,
                     trim_factor_artefacts=0.99,
                     target_level_offset=-14,
                     quality_anchor_loudness_balance=[0, 0])
+
             anchors = creator.create()
+
             for anchor_type in anchors._fields:
+
                 if anchor_type == 'Interferer':
                     name = 'anchor_loudness_mix_{}dB'.format(level)
                 elif anchor_type == 'Quality':
                     name = 'anchor_quality_mix_{}dB'.format(level)
                 else:
                     continue
+
                 wav = getattr(anchors, anchor_type)
-                write_wav(wav,
-                          os.path.join(full_path, name + '.wav'),
-                          target_loudness)
+
+                dif = write_wav(wav,
+                                os.path.join(full_path, name + '.wav'),
+                                target_loudness)
+
+                if (anchor_type == 'Interferer') and save_sources:
+
+                    anchor_tgt, anchor_accomp = creator.interferer_anchor_both_sources()
+
+                    write_wav(anchor_tgt * utilities.conversion.db_to_amp(dif),
+                              os.path.join(full_path, name + '_target.wav'),
+                              None)
+
+                    write_wav(anchor_accomp * utilities.conversion.db_to_amp(dif),
+                              os.path.join(full_path, name + '_accomp.wav'),
+                              None)
 
         # Mixes per method
-        not_ref_sample = g_sample[g_sample.method != 'Ref']
+        not_ref_sample = g_sample[g_sample.method != 'ref']
         for method_name, method_sample in not_ref_sample.groupby('method'):
 
             # Get target and accompaniment
@@ -174,13 +206,27 @@ def write_mixtures_from_sample(sample,
 
             # Mixing
             for level in mixing_levels:
+
                 name = '{0}_mix_{1}dB'.format(method_name, level)
 
-                mix = (utilities.conversion.db_to_amp(level) * target_audio +
-                       accomp)
+                new_target = utilities.conversion.db_to_amp(level) * target_audio
+                mix = new_target + accomp
 
-                write_wav(mix, os.path.join(full_path, name + '.wav'),
-                          target_loudness)
+                level_dif = write_wav(mix,
+                                      os.path.join(full_path, name + '.wav'),
+                                      target_loudness)
+
+                if save_sources:
+
+                    write_wav(
+                        new_target * utilities.conversion.db_to_amp(level_dif),
+                        os.path.join(full_path, name + '_target.wav'),
+                        None)
+
+                    write_wav(
+                        accomp * utilities.conversion.db_to_amp(level_dif),
+                        os.path.join(full_path, name + '_accomp.wav'),
+                        None)
 
 
 def write_target_from_sample(sample,
@@ -193,7 +239,7 @@ def write_target_from_sample(sample,
     # Iterate over the tracks and write audio out:
     for idx, g_sample in sample.groupby('track_id'):
 
-        ref_sample = g_sample[g_sample.method == 'Ref']
+        ref_sample = g_sample[g_sample.method == 'ref']
 
         # Reference target
         ref = load_audio(ref_sample[ref_sample.target == target],
@@ -211,7 +257,7 @@ def write_target_from_sample(sample,
                             end)
 
         # Load test items at the same point in time (same segment times)
-        test_items = load_audio(g_sample[(g_sample.method != 'Ref') &
+        test_items = load_audio(g_sample[(g_sample.method != 'ref') &
                                          (g_sample.target == target)],
                                 force_mono,
                                 start,
@@ -247,11 +293,19 @@ def write_target_from_sample(sample,
                       target_loudness)
 
 
-def write_wav(sig, filename, target_loudness=-23):
-    sig.loudness = target_loudness
+def write_wav(sig, filename, target_loudness=None):
+
+    if target_loudness:
+        level_dif = target_loudness - sig.loudness
+        sig.loudness = target_loudness
+    else:
+        level_dif = 0
+
     # If you need 32-bit wavs, use
     sig = sig.astype('float32')
     sig.write(filename)
+
+    return level_dif
 
 
 def combine_anchors(distortion, artefact):
@@ -260,11 +314,25 @@ def combine_anchors(distortion, artefact):
     return 0.7 * distortion + 0.3 * gain * artefact
 
 
+def make_waves_same_length(list_of_waves):
+
+    min_length = np.min([_.num_frames for _ in list_of_waves])
+    min_length = np.minimum(min_length,
+                            np.min([_.num_frames for _ in list_of_waves]))
+
+    for i, wave in enumerate(list_of_waves):
+        list_of_waves[i] = wave[:min_length]
+
+    return list_of_waves
+
+
 def bss_eval(list_of_ref_waves, list_of_est_waves):
     '''
     This function computed the Bss Eval measures given the reference and
     estimated sources, both of which should be mono untwist.data.audio.Wave
-    objects.
+    objects. I will trim the end of your audio if they are not equal in length.
+
+    You must give me a list of waves or 1 wave per argument.
 
     Returns:
         BssEvalStats named tuple with the field names:
@@ -281,21 +349,18 @@ def bss_eval(list_of_ref_waves, list_of_est_waves):
     if isinstance(list_of_est_waves, data.audio.Wave):
         list_of_est_waves = [list_of_est_waves]
 
-    list_of_ref_waves[0].check_mono()
-
-    min_length = np.min([_.num_frames for _ in list_of_ref_waves])
-    min_length = np.minimum(min_length,
-                            np.min([_.num_frames for _ in list_of_est_waves]))
+    if not isinstance(list_of_ref_waves, list):
+        raise ValueError('I want a list of waves!')
 
     num_sources = len(list_of_ref_waves)
-    ref_sources = np.zeros((num_sources, min_length))
-    est_sources = np.zeros((num_sources, min_length))
+    if len(list_of_est_waves) != num_sources:
+        raise ValueError('The number of reference and estimates sources is not equal')
 
-    for i, ref in enumerate(list_of_ref_waves):
-        ref_sources[i] = np.array(ref[:, 0]).reshape(1, -1)
+    list_of_ref_waves[0].check_mono()
 
-    for i, est in enumerate(list_of_est_waves):
-        est_sources[i] = np.array(est[:, 0]).reshape(1, -1)
+    waves = make_waves_same_length(list_of_ref_waves + list_of_est_waves)
+    ref_sources = np.array([_[:, 0] for _ in waves[:num_sources]])
+    est_sources = np.array([_[:, 0] for _ in waves[num_sources:]])
 
     (sdr, sir, sar, perm) = separation.bss_eval_sources(ref_sources,
                                                         est_sources,
@@ -305,3 +370,104 @@ def bss_eval(list_of_ref_waves, list_of_est_waves):
                         sir=sir,
                         sar=sar,
                         perm=perm)
+
+
+def peass(list_of_ref_waves, list_of_est_waves, path_to_peass_toolbox):
+    '''
+    This function computed the Bss Eval measures given the reference and
+    estimated sources, both of which should be mono untwist.data.audio.Wave
+    objects. I will trim the end of your audio if they are not equal in length.
+
+    You must give me a list of waves or 1 wave per argument.
+
+    Returns:
+        BssEvalStats named tuple with the field names:
+            - sdr: Signal to Distortion Ratio
+            - sir: Signal to Interference Ratio
+            - sar: Signal to Artefacts Ratio
+            - perm: Best ordering of estimated sources in the mean SIR sense
+    '''
+
+    main_script = '''
+        options.segmentationFactor = 1;
+        res = PEASS_ObjectiveMeasure(refFiles, estimateFile, options);
+        ops = res.OPS;
+        tps = res.TPS;
+        ips = res.IPS;
+        aps = res.APS;
+        '''
+
+    StatsPEASS = collections.namedtuple('StatsPEASS', ['ops',
+                                                       'tps',
+                                                       'ips',
+                                                       'aps',
+                                                       ]
+                                        )
+
+    # Initial setup for dealing with waves
+    if isinstance(list_of_ref_waves, data.audio.Wave):
+        list_of_ref_waves = [list_of_ref_waves]
+    if isinstance(list_of_est_waves, data.audio.Wave):
+        list_of_est_waves = [list_of_est_waves]
+
+    if not isinstance(list_of_ref_waves, list):
+        raise ValueError('I want a list of waves!')
+
+    num_sources = len(list_of_ref_waves)
+    if len(list_of_est_waves) != num_sources:
+        raise ValueError('The number of reference and estimates sources is not equal')
+
+    list_of_ref_waves[0].check_mono()
+
+    waves = make_waves_same_length(list_of_ref_waves + list_of_est_waves)
+    refs = waves[:num_sources]
+    ests = waves[num_sources:]
+
+    # Matlab side... (yak!)
+    matlab = matlab_wrapper.MatlabSession()
+    matlab.eval("addpath(genpath('{}'));".format(path_to_peass_toolbox))
+
+    with TemporaryDirectory() as tmp_dir:
+
+        # First we need to write the reference source to disk
+        for i, wave in enumerate(refs):
+            name = '{}/{}.wav'.format(tmp_dir, i)
+            wave.write(name)
+            if i == 0:
+                cell = "{{'{0}'".format(name)
+            else:
+                cell = "{0};'{1}'".format(cell, name)
+        cell += '}'
+
+        matlab.eval('originalFiles = {};'.format(cell))
+        matlab.eval("options.destDir = '{}'".format(tmp_dir))
+
+        # Now run PEASS on the estimated sources
+        stats = []
+        for i, wave in enumerate(ests):
+
+            organised_files = (
+                "refFiles = "
+                "originalFiles([{},"
+                "setdiff(1:length(originalFiles), {})]);").format(i+1, i+1)
+
+            matlab.eval(organised_files)
+
+            name = '{}/est.wav'.format(tmp_dir)
+            wave.write(name)
+
+            matlab.put('estimateFile', name)
+
+            matlab.eval(main_script)
+
+            stats.append(
+                StatsPEASS(ops=matlab.get('ops'),
+                           tps=matlab.get('tps'),
+                           ips=matlab.get('ips'),
+                           aps=matlab.get('aps'))
+            )
+
+    if len(stats) == 1:
+        return stats[0]
+    else:
+        return stats

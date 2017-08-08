@@ -289,6 +289,16 @@ class RemixAnchor():
 
         return mix.normalize()
 
+    def interferer_anchor_both_sources(self):
+        '''
+        Returns the target and background as used to create the interferer
+        anchor (but not normalised).
+        '''
+
+        return (self.target *
+                utilities.conversion.db_to_amp(self.target_level_offset),
+                self.background)
+
     def quality_anchor(self):
         '''
         Sum of the distorted mix and artefacts of the mix, at equal loudness.

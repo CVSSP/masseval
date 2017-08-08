@@ -3,9 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sb
 import os
-
 import massdatasets
-
 from . import config
 
 
@@ -210,6 +208,7 @@ def get_sample(df,
                target='vocals',
                only_these_algos=None,
                exclude_tracks=None,
+               remove_outliers=False,
                selection_plot=False):
     '''
     filenames are replaced with the actual file location.
@@ -228,10 +227,11 @@ def get_sample(df,
     if exclude_tracks is not None:
         sub_df = sub_df[~sub_df.track_id.isin(exclude_tracks)]
 
+
     sample = sample_stimuli_algos(sub_df,
                                   num_tracks=num_tracks,
                                   num_algos=num_algos,
-                                  remove_outliers=True)
+                                  remove_outliers=remove_outliers)
 
     if selection_plot:
         plt.figure(1)

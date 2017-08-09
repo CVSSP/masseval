@@ -43,7 +43,7 @@ def get_audio_filepaths(df):
     return pd.Series(files_to_get, index=df.index)
 
 
-def get_sisec_df():
+def get_sisec_df(must_have_all_sources=True):
 
     '''
     Returns the SiSEC17 data as a pandas DataFrame, excluding the test set and
@@ -65,11 +65,11 @@ def get_sisec_df():
                              'vocals']))
             ]
 
-    # Ensure we have all four stems per song
-    df = df.groupby(['title', 'method']).filter(
-        lambda g: set(g.target) == set(['bass', 'drums', 'other',
-                                        'accompaniment', 'vocals'])
-    )
+    if must_have_all_sources:
+        df = df.groupby(['title', 'method']).filter(
+            lambda g: set(g.target) == set(['bass', 'drums', 'other',
+                                            'accompaniment', 'vocals'])
+        )
 
     filepaths = get_audio_filepaths(df)
     df['filepath'] = filepaths
@@ -94,23 +94,29 @@ def add_reference_to_sample(sample):
 
     df = get_dsd100_df(config.dsd_base_path)
 
-    ref = sample[sample.method == sample.iloc[0]['method']].copy()
-    ref['method'] = 'ref'
-    ref = ref[ref.target != 'accompaniment']
-    ref['score'] = np.nan
+    out = pd.DataFrame(columns=sample.columns)
+    for idx, group in sample.groupby('track_id'):
+        ref = group.iloc[0].copy()
+        for stem in ['vocals', 'drums', 'bass', 'other']:
+            ref['method'] = 'ref'
+            ref['score'] = np.nan
+            ref['filename'] = ''
+            ref['target'] = stem
+            out = out.append(ref)
+    out = out.reset_index(drop=True)
 
-    for idx, g in ref.iterrows():
+    for idx, g in out.iterrows():
 
         title = g['title'].split('- ')[1]
 
         temp = df[(df['title'].str.contains(title)) &
                   (df['audio'] == g['target'])]
 
-        ref.loc[idx, 'filepath'] = temp['audio_filepath'].values[0]
+        out.loc[idx, 'filepath'] = temp['audio_filepath'].values[0]
 
-    sample = sample.append(ref).reset_index()
+    out = sample.append(out).reset_index(drop=True)
 
-    return sample
+    return out.sort_values(by=['track_id', 'method', 'target'])
 
 
 def interquartile_range(df):
@@ -227,12 +233,10 @@ def get_sample(df,
     if exclude_tracks is not None:
         sub_df = sub_df[~sub_df.track_id.isin(exclude_tracks)]
 
-
     sample = sample_stimuli_algos(sub_df,
                                   num_tracks=num_tracks,
                                   num_algos=num_algos,
                                   remove_outliers=remove_outliers)
-
     if selection_plot:
         plt.figure(1)
         sb.boxplot(sub_df.score, groupby=sub_df.track_id)
@@ -244,14 +248,22 @@ def get_sample(df,
         sb.swarmplot(sample.track_id, sample.score, color=".25")
         plt.show()
 
-    # Add all other sources back in
-    sample = df[(df.metric == metric) &
-                df.track_id.isin(sample.track_id) &
-                df.method.isin(sample.method)]
+    out = pd.DataFrame()
+    # Add other sources back in, removing accompaniment if others are present
+    for idx, g in sample.groupby(['track_id', 'method']):
 
-    sample = add_reference_to_sample(sample)
+        sub = df[(df.metric == metric) &
+                 (df.track_id == idx[0]) &
+                 (df.method == idx[1])]
 
-    return sample
+        if len(sub.target) == 5:
+            sub = sub[sub.target != 'accompaniment']
+
+        out = out.append(sub)
+
+    out = add_reference_to_sample(out)
+
+    return out
 
 
 def remix_df_from_sample(sample,

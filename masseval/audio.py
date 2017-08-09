@@ -9,7 +9,10 @@ from . import anchor
 import matlab_wrapper
 
 
-def load_audio(df, force_mono=False, start=None, end=None):
+def load_audio(df,
+               force_mono=False,
+               start=None,
+               end=None):
 
     if isinstance(df, pd.Series):
         df = df.to_frame()
@@ -23,10 +26,8 @@ def load_audio(df, force_mono=False, start=None, end=None):
         if start and end:
             wav = segment(wav, start, end)
 
-        # key = '{0}-{1}'.format(key_prepend, item[1]['method'])
         key = '{0}-{1}'.format(item[1]['method'], item[1]['target'])
         out[key] = wav
-
     return out
 
 
@@ -233,8 +234,11 @@ def write_target_from_sample(sample,
                              target='vocals',
                              directory=None,
                              force_mono=True,
-                             target_loudness=-23,
-                             segment_duration=7):
+                             target_loudness=-26,
+                             segment_duration=7,
+                             include_background_in_quality_anchor=True,
+                             loudness_normalise_interferer=True,
+                             ):
 
     # Iterate over the tracks and write audio out:
     for idx, g_sample in sample.groupby('track_id'):
@@ -244,6 +248,7 @@ def write_target_from_sample(sample,
         # Reference target
         ref = load_audio(ref_sample[ref_sample.target == target],
                          force_mono)
+
 
         # Find portion of track to take
         (ref_key, ref_audio), = ref.items()
@@ -256,6 +261,8 @@ def write_target_from_sample(sample,
                             start,
                             end)
 
+        others = list(others.values())
+
         # Load test items at the same point in time (same segment times)
         test_items = load_audio(g_sample[(g_sample.method != 'ref') &
                                          (g_sample.target == target)],
@@ -264,8 +271,13 @@ def write_target_from_sample(sample,
                                 end)
 
         # Generate anchors
-        anchor_creator = anchor.Anchor(ref[ref_key],
-                                       list(others.values()))
+        anchor_creator = anchor.Anchor(
+            ref[ref_key],
+            others,
+            include_background_in_quality_anchor=include_background_in_quality_anchor,
+            loudness_normalise_interferer=loudness_normalise_interferer,
+        )
+
         anchors = anchor_creator.create()
 
         # Write audio
@@ -280,10 +292,12 @@ def write_target_from_sample(sample,
             os.makedirs(full_path)
 
         for name, wav in ref.items():
+            name = name.split('-')[0]  # Remove target name
             write_wav(wav, os.path.join(full_path, name + '.wav'),
                       target_loudness)
 
         for name, wav in test_items.items():
+            name = name.split('-')[0]
             write_wav(wav, os.path.join(full_path, name + '.wav'),
                       target_loudness)
 

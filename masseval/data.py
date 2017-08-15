@@ -287,19 +287,19 @@ def remix_df_from_sample(sample,
 
         for name, method in g_sample.groupby('method'):
 
-            # Setting on copy is fine here
+            this_method = method.copy()
             for level in mixing_levels:
 
-                method['level'] = level
+                this_method['level'] = level
                 filename = '{0}/{1}_mix_{2}dB'.format(full_path, name, level)
 
-                method.loc[method.target == target,
-                           'stimulus_path'] = filename + '_target.wav'
-                method.loc[method.target == 'accomp',
-                           'stimulus_path'] = filename + '_accomp.wav'
-                method.loc[method.target == 'mixture',
-                           'stimulus_path'] = filename + '.wav'
+                this_method.loc[this_method.target == target,
+                                'stimulus_path'] = filename + '_target.wav'
+                this_method.loc[this_method.target == 'accomp',
+                                'stimulus_path'] = filename + '_accomp.wav'
+                this_method.loc[this_method.target == 'mixture',
+                                'stimulus_path'] = filename + '.wav'
 
-                frames = pd.concat([frames, method])
+                frames = pd.concat([frames, this_method])
 
     return frames

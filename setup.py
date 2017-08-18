@@ -30,6 +30,7 @@ setup(
         'untwist >= 0.1.dev0',
         'lxml',
         'mir_eval',
+        'matlab_wrapper',
     ],
     extras_require={
         'display': ['matplotlib>=1.5.0',

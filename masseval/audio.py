@@ -236,6 +236,7 @@ def write_target_from_sample(sample,
                              force_mono=True,
                              target_loudness=-26,
                              segment_duration=7,
+                             trim_factor_distorted=0.2,
                              include_background_in_quality_anchor=True,
                              loudness_normalise_interferer=True,
                              ):
@@ -274,6 +275,7 @@ def write_target_from_sample(sample,
         anchor_creator = anchor.Anchor(
             ref[ref_key],
             others,
+            trim_factor_distorted=trim_factor_distorted,
             include_background_in_quality_anchor=include_background_in_quality_anchor,
             loudness_normalise_interferer=loudness_normalise_interferer,
         )

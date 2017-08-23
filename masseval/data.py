@@ -228,6 +228,10 @@ def get_sample(df,
                 ]
 
     if only_these_algos is not None:
+        if num_algos != len(only_these_algos):
+            raise ValueError(('Number of algorithms is {0}, '
+                              'but got {1}'.format(num_algos,
+                                                   len(only_these_algos))))
         sub_df = sub_df[sub_df.method.isin(only_these_algos)]
 
     if exclude_tracks is not None:

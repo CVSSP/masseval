@@ -31,7 +31,7 @@ def load_audio(df,
     return out
 
 
-def find_active_portion(wave, duration, perc=90):
+def find_active_portion(wave, duration, perc=75):
     '''
     Returns the start and end sample indices of an active portion of the audio
     file according to the Pth percentile of the windowed energy measurements.
@@ -52,6 +52,25 @@ def find_active_portion(wave, duration, perc=90):
     return start, end
 
 
+def find_active_portion_from_sample(sample,
+                                    target='vocals',
+                                    segment_duration=7,
+                                    perc=75):
+    '''
+    Returns the start and end sample indices of an active portion of the audio
+    file according to the Pth percentile of the windowed energy measurements.
+    As audio file the vocal reference track from the provided sample is loaded.
+    '''
+
+    ref_sample = sample[sample.method == 'ref']
+    ref_target = ref_sample[ref_sample.target == target]
+    wave = load_audio(ref_target, force_mono=True)
+    (_, target_audio), = wave.items()
+    (start, end) = find_active_portion(target_audio, segment_duration, perc)
+
+    return start, end
+
+
 def segment(wave, start, end, ramp_dur=0.02):
 
     wave = wave[start:end]
@@ -63,6 +82,157 @@ def segment(wave, start, end, ramp_dur=0.02):
     wave[-ramp_dur_samples:] *= np.cos(t) ** 2
 
     return wave
+
+
+def get_reference_signals(sample,
+                          target='vocals',
+                          conditions=['vocals', 'accompaniment'],
+                          segment_duration=7,
+                          force_mono=True):
+
+    ref_sample = sample[sample.method == 'ref']
+    ref_target = ref_sample[ref_sample.target == target]
+    # Get the portion that should be excerpt from the signal always from the
+    # target signal.
+    wave = load_audio(ref_target, force_mono)
+    (_, target_audio), = wave.items()
+    (start, end) = find_active_portion(target_audio, segment_duration, 75)
+
+    for name in conditions:
+        if name == target:
+            signals[name] = segment(target_audio, start, end)
+        elif name == 'accompaniment':
+            ref_accomp = ref_sample[ref_sample.target != target]
+            wave = load_audio(ref_accomp, force_mono, start, end)
+            (_, accomp_audio), = sum(other for name, other in wave.items())
+            signals[name] = accomp_audio
+        else:
+            ref_condition = ref_sample[ref_sample.target == signal]
+            wave = load_audio(ref_condition, force_mono, start, end)
+            (_, condition_audio), = wave.items()
+            signals[name] = condition_audio
+
+    return signals
+
+
+def get_signals(sample,
+                conditions=['vocals', 'accompaniment'],
+                start=1,
+                end=':',
+                force_mono=True):
+
+    # First get reference signals
+    ref_sample = sample[sample.method == 'ref']
+    ref_target = ref_sample[ref_sample.target == target]
+
+    for name in conditions:
+        if name == 'accompaniment':
+            ref_accomp = ref_sample[ref_sample.target != 'vocals']
+            wave = load_audio(ref_accomp, force_mono, start, end)
+            (_, accomp_audio), = sum(other for name, other in wave.items())
+            signals[name] = accomp_audio
+        else:
+            ref_condition = ref_sample[ref_sample.target == name]
+            wave = load_audio(ref_condition, force_mono, start, end)
+            (_, condition_audio), = wave.items()
+            signals[name] = condition_audio
+
+    return signals
+
+
+def write_upmixtures_from_sample(sample,
+                                 target='vocals',
+                                 directory=None,
+                                 force_mono=True,
+                                 target_loudness=-23,
+                                 mixing_levels=[-12, -6, 0, 6, 12],
+                                 segment_duration=7,
+                                 save_sources=False):
+
+    sources = ['vocals', 'bass', 'drums', 'other']
+
+    _prepare_saving_of_audio(sample, directory, 'upmix')
+
+    # Iterate over the tracks and write audio out:
+    for idx, track in sample.groupby('track_id'):
+
+        start, end = find_active_portion_from_sample(track)
+
+        signals = get_signals(
+
+        '''
+        Reference audio
+        '''
+        ref_signals = get_reference_signals(track,
+                                            target='vocals',
+                                            conditions=sources,
+                                            segment_duration=7,
+                                            force_mono=True)
+
+            name = 'ref_mix_{}dB'.format(level)
+            mix = new_target + accomp_audio
+            level_dif = write_wav(mix, os.path.join(full_path, name + '.wav'),
+                                  target_loudness)
+
+        # Mixes per method
+        not_ref_sample = g_sample[g_sample.method != 'ref']
+        for method_name, method_sample in not_ref_sample.groupby('method'):
+
+            # Get target and accompaniment
+            index = method_sample['target'] == target
+
+            target_audio = load_audio(method_sample[index],
+                                      force_mono, start, end)
+
+            (_, target_audio), = target_audio.items()
+
+            if 'accompaniment' in method_sample['target'].values:
+
+                index = method_sample['target'] == 'accompaniment'
+
+                accompaniments = load_audio(method_sample[index],
+                                            force_mono, start, end)
+
+                (_, accomp), = accompaniments.items()
+
+            else:
+
+                others = load_audio(
+                    method_sample[method_sample.target != target],
+                    force_mono,
+                    start,
+                    end)
+
+                accomp = sum(other for name, other in others.items())
+
+            # Fix GRA
+            if method_name in ['GRA2', 'GRA3']:
+                target_audio = -1 * target_audio
+                accomp = -1 * accomp
+
+            # Mixing
+            for level in mixing_levels:
+
+                name = '{0}_mix_{1}dB'.format(method_name, level)
+
+                new_target = utilities.conversion.db_to_amp(level) * target_audio
+                mix = new_target + accomp
+
+                level_dif = write_wav(mix,
+                                      os.path.join(full_path, name + '.wav'),
+                                      target_loudness)
+
+                if save_sources:
+
+                    write_wav(
+                        new_target * utilities.conversion.db_to_amp(level_dif),
+                        os.path.join(full_path, name + '_target.wav'),
+                        None)
+
+                    write_wav(
+                        accomp * utilities.conversion.db_to_amp(level_dif),
+                        os.path.join(full_path, name + '_accomp.wav'),
+                        None)
 
 
 def write_mixtures_from_sample(sample,
@@ -487,3 +657,31 @@ def peass(list_of_ref_waves, list_of_est_waves, path_to_peass_toolbox):
         return stats[0]
     else:
         return stats
+
+
+def panning(mono_signal, phi):
+    '''
+    Amplitude pans the given signal to the lateralization phi in degree.
+    '''
+    x = -1 * math.sin(math.radians(phi))
+    y_l = (1-x) * 0.5
+    y_r = (x+1) * 0.5
+
+    out_l = y_l * mono_signal
+    out_r = y_r * mono_signal
+
+    stereo_sig = [out_l, out_r]
+
+    return stereo_sig
+
+
+def _prepare_saving_of_audio(sample, directory, name):
+
+    folder = '{0}-{1}-{2}'.format(name,
+                                  sample.iloc[0]['track_id'],
+                                  sample.iloc[0]['metric'])
+
+    full_path = os.path.join(directory, folder)
+
+    if not os.path.exists(full_path):
+        os.makedirs(full_path)

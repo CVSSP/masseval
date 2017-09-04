@@ -1,3 +1,4 @@
+import warnings
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -129,15 +130,18 @@ def find_outliers(df):
     return (df < q1 - iqr * 1.5) | (df > q3 + iqr * 1.5)
 
 
-def diff_sampler(df, size):
+def diff_sampler(df, size, num_iters=1000):
 
     df = df.sort_values()
+
+    if size == 1:
+        return df.take([0])
 
     step = (np.max(df) - np.min(df)) / (size - 1)
     alpha = 0.01
 
     idx = []
-    while True:
+    for i in range(num_iters):
 
         idx = [0]
         val_prev = df.iloc[0]
@@ -150,9 +154,14 @@ def diff_sampler(df, size):
         if len(idx) > size:
             step *= 1 + alpha
         elif len(idx) < size:
-            step *= alpha
+            step *= 1 - alpha
         else:
-            break
+            return df.take(idx)
+
+    warnings.warn(
+        'The returned sample size is {0} but you asked for {1}'.format(
+            len(idx), size)
+    )
 
     return df.take(idx)
 

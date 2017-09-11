@@ -223,6 +223,7 @@ def get_sample(df,
                target='vocals',
                only_these_algos=None,
                exclude_tracks=None,
+               exclude_algos_in_tracks=None,
                remove_outliers=False,
                selection_plot=False):
     '''
@@ -245,6 +246,14 @@ def get_sample(df,
 
     if exclude_tracks is not None:
         sub_df = sub_df[~sub_df.track_id.isin(exclude_tracks)]
+
+    if isinstance(exclude_algos_in_tracks, dict):
+        for algo, tracks in exclude_algos_in_tracks.items():
+            if not isinstance(tracks, list):
+                tracks = list(tracks)
+
+            sub_df = sub_df[~((sub_df.method == algo) &
+                              (sub_df.track_id.isin(tracks)))]
 
     sample = sample_stimuli_algos(sub_df,
                                   num_tracks=num_tracks,

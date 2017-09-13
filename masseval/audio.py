@@ -236,6 +236,7 @@ def write_target_from_sample(sample,
                              force_mono=True,
                              target_loudness=-26,
                              segment_duration=7,
+                             song_start_and_end_times=None,
                              trim_factor_distorted=0.2,
                              include_background_in_quality_anchor=True,
                              loudness_normalise_interferer=True,
@@ -247,13 +248,23 @@ def write_target_from_sample(sample,
         ref_sample = g_sample[g_sample.method == 'ref']
 
         # Reference target
-        ref = load_audio(ref_sample[ref_sample.target == target],
-                         force_mono)
-
+        ref_sample_target = ref_sample[ref_sample.target == target]
+        ref = load_audio(ref_sample_target, force_mono)
 
         # Find portion of track to take
+        current_track = str(ref_sample_target.track_id.values[0])
         (ref_key, ref_audio), = ref.items()
-        start, end = find_active_portion(ref_audio, segment_duration, 75)
+        if (isinstance(song_start_and_end_times, dict) and
+           current_track in song_start_and_end_times.keys()):
+            start = song_start_and_end_times[current_track][0]
+            if len(song_start_and_end_times[current_track]) == 2:
+                end = song_start_and_end_times[current_track][1]
+            else:
+                end = start + segment_duration
+            start = int(np.round(start * ref_audio.sample_rate))
+            end = int(np.round(end * ref_audio.sample_rate))
+        else:
+            start, end = find_active_portion(ref_audio, segment_duration, 75)
         ref[ref_key] = segment(ref_audio, start, end)
 
         # Reference non-target stems

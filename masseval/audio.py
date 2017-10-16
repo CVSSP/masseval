@@ -240,7 +240,8 @@ def write_target_from_sample(sample,
                              trim_factor_distorted=0.2,
                              include_background_in_quality_anchor=True,
                              loudness_normalise_interferer=True,
-                             loudness_normalise_stimuli=True,
+                             suffix=None,
+                             overall_gain=0,
                              ):
     '''
     (More doc needed)
@@ -249,6 +250,9 @@ def write_target_from_sample(sample,
     reference (target). This means that:
         mixture_2 = ref.wav + ref_accompaniment.wav
     where mixture_2 = mixture * some_gain_factor
+
+    If you do not want to loudness normalise stimuli, set `target_loudness' to
+    None.
     '''
 
     # Iterate over the tracks and write audio out:
@@ -317,33 +321,45 @@ def write_target_from_sample(sample,
 
             name = name.split('-')[0]  # Remove target name
 
+            if suffix:
+                name += suffix
+
             # The reference
             dif = write_wav(wav, os.path.join(full_path, name + '.wav'),
-                            target_loudness)
+                            target_loudness, overall_gain)
 
             # The accompaniment
             write_wav(sum(others) * utilities.conversion.db_to_amp(dif),
                       os.path.join(full_path, name + '_accompaniment.wav'),
-                      None)
+                      None, overall_gain)
 
         for name, wav in test_items.items():
             name = name.split('-')[0]
+            if suffix:
+                name += suffix
             write_wav(wav, os.path.join(full_path, name + '.wav'),
-                      target_loudness)
+                      target_loudness, overall_gain)
 
         for name in anchors._fields:
+
             wav = getattr(anchors, name)
+
+            if suffix:
+                name += suffix
+
             write_wav(wav, os.path.join(full_path, name + '.wav'),
-                      target_loudness)
+                      target_loudness, overall_gain)
 
 
-def write_wav(sig, filename, target_loudness=None):
+def write_wav(sig, filename, target_loudness=None, overall_gain=0):
 
     if target_loudness:
         level_dif = target_loudness - sig.loudness
         sig.loudness = target_loudness
     else:
         level_dif = 0
+
+    sig *= utilities.db_to_amp(overall_gain)
 
     # If you need 32-bit wavs, use
     sig = sig.astype('float32')

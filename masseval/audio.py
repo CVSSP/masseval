@@ -241,6 +241,14 @@ def write_target_from_sample(sample,
                              include_background_in_quality_anchor=True,
                              loudness_normalise_interferer=True,
                              ):
+    '''
+    (More doc needed)
+    This function will also write the accompaniment (sum of non-target stems)
+    out to `ref_accompaniment.wav', with the same gain factor as applied to the
+    reference (target). This means that:
+        mixture_2 = ref.wav + ref_accompaniment.wav
+    where mixture_2 = mixture * some_gain_factor
+    '''
 
     # Iterate over the tracks and write audio out:
     for idx, g_sample in sample.groupby('track_id'):
@@ -305,9 +313,17 @@ def write_target_from_sample(sample,
             os.makedirs(full_path)
 
         for name, wav in ref.items():
+
             name = name.split('-')[0]  # Remove target name
-            write_wav(wav, os.path.join(full_path, name + '.wav'),
-                      target_loudness)
+
+            # The reference
+            dif = write_wav(wav, os.path.join(full_path, name + '.wav'),
+                            target_loudness)
+
+            # The accompaniment
+            write_wav(sum(others) * utilities.conversion.db_to_amp(dif),
+                      os.path.join(full_path, name + '_accompaniment.wav'),
+                      None)
 
         for name, wav in test_items.items():
             name = name.split('-')[0]

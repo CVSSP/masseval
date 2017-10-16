@@ -99,7 +99,7 @@ class Anchor:
 
         distortion = self.istft.process(x_fft)
 
-        return distortion[:self.target.num_frames].normalize()
+        return distortion[:self.target.num_frames]
 
     def inteference_anchor(self):
         '''
@@ -117,7 +117,7 @@ class Anchor:
 
         interferer += self.target
 
-        return interferer.normalize()
+        return interferer
 
     def artefacts(self):
         '''
@@ -157,7 +157,7 @@ class Anchor:
 
         anchor = artefacts + self.target
 
-        return anchor.normalize()
+        return anchor
 
     def quality_anchor(self):
         '''
@@ -182,7 +182,7 @@ class Anchor:
         anchor = sum(signals)
         anchor = anchor[:self.target.num_frames]
 
-        return anchor.normalize()
+        return anchor
 
     def create(self):
 
@@ -266,7 +266,7 @@ class RemixAnchor():
                utilities.conversion.db_to_amp(self.target_level_offset) +
                self.background)
 
-        return mix.normalize()
+        return mix
 
     def interferer_anchor_both_sources(self):
         '''
@@ -302,7 +302,7 @@ class RemixAnchor():
         anchor = sum(signals)
         anchor = anchor[:self.target.num_frames]
 
-        return anchor.normalize()
+        return anchor
 
     def create(self):
 

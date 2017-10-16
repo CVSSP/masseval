@@ -240,6 +240,7 @@ def write_target_from_sample(sample,
                              trim_factor_distorted=0.2,
                              include_background_in_quality_anchor=True,
                              loudness_normalise_interferer=True,
+                             loudness_normalise_stimuli=True,
                              ):
     '''
     (More doc needed)

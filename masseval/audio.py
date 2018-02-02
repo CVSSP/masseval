@@ -286,7 +286,7 @@ def write_target_from_sample(sample,
                             start,
                             end)
 
-        others = list(others.values())
+        list_of_others = list(others.values())
 
         # Load test items at the same point in time (same segment times)
         test_items = load_audio(g_sample[(g_sample.method != 'ref') &
@@ -298,7 +298,7 @@ def write_target_from_sample(sample,
         # Generate anchors
         anchor_creator = anchor.Anchor(
             ref[ref_key],
-            others,
+            list_of_others,
             trim_factor_distorted=trim_factor_distorted,
             include_background_in_quality_anchor=include_background_in_quality_anchor,
             loudness_normalise_interferer=loudness_normalise_interferer,
@@ -329,8 +329,21 @@ def write_target_from_sample(sample,
                             target_loudness, overall_gain)
 
             # The accompaniment
-            write_wav(sum(others) * utilities.conversion.db_to_amp(dif),
+            write_wav(sum(list_of_others) *
+                      utilities.conversion.db_to_amp(dif),
                       os.path.join(full_path, name + '_accompaniment.wav'),
+                      None, overall_gain)
+
+        # Write out the other stems
+        for name, wav in others.items():
+
+            name = name.split('-')[1]
+
+            if suffix:
+                name += suffix
+
+            write_wav(wav * utilities.conversion.db_to_amp(dif),
+                      os.path.join(full_path, name + '.wav'),
                       None, overall_gain)
 
         for name, wav in test_items.items():
